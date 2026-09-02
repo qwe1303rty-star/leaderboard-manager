@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; img-src 'self' file: data:;">
+  <title>Leaderboard - Превью</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      padding: 3vh 4vw;
+      position: relative;
+    }
+
+    .deco { position: fixed; pointer-events: none; opacity: .5; }
+    .deco.tr { top: -14vh; right: -8vw; }
+    .deco.bl { bottom: -16vh; left: -10vw; }
+
+    #stage {
+      position: absolute; inset: 0;
+      transform-origin: center center;
+      will-change: transform;
+    }
+
+    .slide {
+      position: absolute; inset: 0;
+      opacity: 0; pointer-events: none;
+      transition: opacity .8s ease;
+      display: flex; flex-direction: column;
+      padding: 3vh 4vw;
+    }
+    .slide.active {
+      opacity: 1; pointer-events: auto;
+    }
+
+    header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 2.2vh; position: relative; z-index: 2;
+    }
+    .brand { display: flex; align-items: center; gap: 1.2vw; }
+    .brand img { width: 6.5vh; height: 6.5vh; border-radius: 6px; padding: 5px; }
+    .brand span { font-size: 2.6vh; font-weight: 700; letter-spacing: 6px; }
+    .datetime {
+      display: flex; align-items: center; gap: 2vw;
+      border: 1px solid rgba(255,255,255,.12); border-radius: 100px;
+      padding: 1.2vh 2.2vw; background: rgba(21,21,23,.7);
+    }
+    .datetime .item { display: flex; align-items: center; gap: 10px; font-size: 2vh; font-weight: 600; letter-spacing: 2px; }
+    .datetime svg { width: 2.4vh; height: 2.4vh; }
+    .datetime .sep { font-weight: 300; opacity: .4; }
+
+    .title-block { position: relative; z-index: 2; margin-bottom: 1.8vh; }
+    .title-block h1 {
+      font-size: 6.5vh; font-weight: 900; letter-spacing: 2px; line-height: 1;
+      text-transform: uppercase;
+    }
+    .title-block h1 .gold {
+      background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .title-block p { margin-top: .8vh; font-size: 2.2vh; font-weight: 400; }
+
+    main {
+      flex: 1; display: grid; grid-template-columns: 1.55fr 1fr; grid-template-rows: 1fr; gap: 2.5vw;
+      min-height: 0; position: relative; z-index: 2;
+    }
+
+    #board {
+      display: flex; flex-direction: column; gap: 1.1vh;
+      min-height: 0; overflow-y: auto; overflow-x: hidden;
+      overscroll-behavior: contain; scrollbar-width: none;
+    }
+    #board::-webkit-scrollbar { width: 5px; }
+    #board::-webkit-scrollbar-track { background: transparent; }
+    #board::-webkit-scrollbar-thumb { background: rgba(212,169,78,.28); border-radius: 999px; }
+    #board::-webkit-scrollbar-thumb:hover { background: rgba(212,169,78,.45); }
+    .row {
+      display: grid; grid-template-columns: 6.5vh 6.5vh 1fr auto auto;
+      align-items: center; gap: 1.6vw;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 16px;
+      padding: 1.4vh 2vw;
+      animation: slideIn .5s ease both;
+    }
+    @keyframes slideIn { from { opacity: 0; transform: translateX(-24px); } to { opacity: 1; transform: none; } }
+    .row.top1 {
+      border: 1px solid rgba(212,169,78,.3);
+      box-shadow: 0 0 30px rgba(212,169,78,.12), inset 0 0 30px rgba(212,169,78,.04);
+    }
+
+    .rank {
+      width: 5.6vh; height: 5.6vh; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.6vh; font-weight: 800;
+      border: 1px solid rgba(255,255,255,.1);
+      color: #fff;
+    }
+
+    .avatar {
+      width: 5.6vh; height: 5.6vh; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.2vh; font-weight: 700;
+      border: 2px solid rgba(255,255,255,.1);
+      overflow: hidden;
+    }
+    .avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+    .name { font-size: 2.8vh; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .lb-namewrap { min-width: 0; }
+    .lb-namewrap .name { display: block; }
+    .lb-dept {
+      display: inline-block; margin-top: .4vh; padding: .2vh .9vw;
+      font-size: 1.5vh; letter-spacing: 2px; text-transform: uppercase; font-weight: 600;
+      border: 1px solid rgba(212,169,78,.25); border-radius: 100px; color: var(--gold);
+    }
+
+    .lb-num { text-align: right; }
+    .lb-num span {
+      display: block; font-size: 1.5vh; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--text-dim);
+    }
+    .lb-num b {
+      display: block; font-size: 3.6vh; font-weight: 800; line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .leader-card {
+      margin-top: -13vh;
+      border-radius: 24px;
+      box-shadow: 0 0 60px rgba(212,169,78,.14), inset 0 1px 0 rgba(240,213,138,.12);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 3vh 2vw; text-align: center; position: relative; overflow: hidden;
+    }
+    .leader-card::before {
+      content: ''; position: absolute; top: -30%; left: -30%; width: 80%; height: 80%;
+      background: radial-gradient(circle, rgba(212,169,78,.10), transparent 70%);
+    }
+    .crown { width: 9vh; height: 9vh; margin-bottom: 1.5vh; filter: drop-shadow(0 0 18px rgba(212,169,78,.55)); }
+    .leader-label { font-size: 2.2vh; letter-spacing: 6px; text-transform: uppercase; font-weight: 600; margin-bottom: 2.5vh; }
+    .leader-name {
+      font-size: 6vh; font-weight: 900; text-transform: uppercase; letter-spacing: 3px; line-height: 1.15;
+    }
+    .leader-sep { width: 60%; height: 1px; margin: 3vh 0; position: relative; }
+    .leader-sep::after {
+      content: '\25C6'; position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%);
+      font-size: 1.2vh; background: transparent;
+    }
+    .leader-num {
+      font-size: 16vh; font-weight: 900; line-height: 1;
+      background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 6px 30px rgba(212,169,78,.25));
+      font-variant-numeric: tabular-nums;
+    }
+    .leader-sub { font-size: 2.4vh; letter-spacing: 4px; text-transform: uppercase; margin-top: 1vh; }
+    .leader-sets {
+      margin-top: 3vh; display: flex; align-items: center; gap: 10px;
+      border: 1px solid rgba(212,169,78,.3); border-radius: 100px;
+      padding: 1.2vh 2vw; background: rgba(11,11,13,.5);
+      font-size: 1.9vh; letter-spacing: 2px; text-transform: uppercase;
+    }
+    .leader-sets svg { width: 2.2vh; height: 2.2vh; }
+
+    footer {
+      margin-top: 2vh; display: flex; justify-content: center; position: relative; z-index: 2;
+    }
+    .live-badge {
+      display: flex; align-items: center; gap: 12px;
+      border: 1px solid rgba(255,255,255,.1); border-radius: 100px;
+      padding: 1.2vh 2.5vw; background: rgba(21,21,23,.7);
+      font-size: 1.8vh; letter-spacing: 3px; text-transform: uppercase;
+    }
+    .live-badge svg { width: 2.2vh; height: 2.2vh; }
+    .live-badge .dot { width: 8px; height: 8px; border-radius: 50%; box-shadow: 0 0 12px currentColor; animation: pulse 1.4s infinite; }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .25; } }
+
+    /* ===== SLIDE 2: РЕЙТИНГ КЦ ===== */
+    .kc-main {
+      flex: 1; display: flex; flex-direction: column;
+      min-height: 0; position: relative; z-index: 2; width: 100%;
+    }
+    .kc-main .title-block { flex: 0 0 auto; }
+    .kc-table {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) minmax(0, 1fr);
+      grid-template-rows: auto repeat(4, minmax(0, 1fr));
+      gap: 1.2vh;
+      width: 100%;
+      flex: 1;
+      min-height: 0;
+    }
+    .kc-cell {
+      display: flex; align-items: center;
+      border-radius: 16px;
+      padding: 2.4vh 2.2vw;
+    }
+    .kc-th {
+      justify-content: center;
+      font-size: 2.1vh; font-weight: 800; letter-spacing: 3px; text-transform: uppercase;
+      background: #1c1c20;
+      border: 1px solid rgba(255,255,255,.16);
+      color: var(--text);
+    }
+    .kc-th.place { justify-content: flex-start; }
+    .kc-tc { min-height: 11vh; }
+    .kc-tc.place {
+      justify-content: flex-start; gap: 1vw;
+      font-size: clamp(2.6vh, 3.2vh, 3.6vh); font-weight: 800; letter-spacing: 1px;
+      color: var(--text);
+      background: #1a1a1d;
+      border: 1px solid rgba(255,255,255,.16);
+    }
+    .kc-medal { flex-shrink: 0; filter: drop-shadow(0 2px 6px rgba(0,0,0,.45)); }
+    .kc-tc.place.kc-1st {
+      border-color: rgba(212,169,78,.55);
+      background: linear-gradient(120deg, rgba(212,169,78,.14), #1a1a1d 55%);
+      box-shadow: inset 0 0 40px rgba(212,169,78,.07);
+    }
+    .kc-tc.cell {
+      justify-content: center; flex-wrap: wrap; gap: 1vh 0.8vw;
+      background: #1a1a1d;
+      border: 1px solid rgba(255,255,255,.16);
+    }
+    .kc-empty {
+      color: var(--text-dim); font-size: 3vh; font-weight: 700;
+    }
+    .kc-badge {
+      padding: 1.2vh 1.8vw; border-radius: 12px;
+      font-size: clamp(2.6vh, 3.2vh, 3.6vh); font-weight: 800; letter-spacing: 1px;
+      color: var(--text);
+      background: rgba(255,255,255,.09);
+      border: 1px solid rgba(255,255,255,.18);
+      white-space: nowrap;
+    }
+    .kc-badge.gold {
+      color: #1a1408;
+      background: linear-gradient(180deg, var(--gold-hi), var(--gold));
+      border: 1px solid rgba(212,169,78,.5);
+      box-shadow: 0 0 25px rgba(212,169,78,.25);
+    }
+
+    .kc-footer {
+      margin-top: 3vh; display: flex; justify-content: center; position: relative; z-index: 2;
+    }
+    .kc-info-badge {
+      display: flex; align-items: center; gap: 10px;
+      border: 1px solid rgba(255,255,255,.1); border-radius: 100px;
+      padding: 1.2vh 2.5vw; background: rgba(21,21,23,.7);
+      font-size: 1.7vh; letter-spacing: 1px;
+    }
+    .kc-info-badge svg { width: 2.2vh; height: 2.2vh; flex-shrink: 0; }
+
+    .slide-progress {
+      width: 60%;
+      max-width: 700px;
+      height: 4px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 1vh auto 0;
+      position: relative;
+      z-index: 2;
+    }
+    .slide-progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #a5823f, #d4a94e);
+      border-radius: inherit;
+      box-shadow: 0 0 10px rgba(212,169,78,0.45);
+    }
+
+    /* ===== SLIDE 3: ЦЕЛЬ И ФАКТ ===== */
+    .kpi-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(2vh, 3vh, 4vh);
+      min-height: 0;
+      position: relative;
+      z-index: 2;
+    }
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: clamp(2vw, 4vw, 6vw);
+      width: 100%;
+      max-width: 900px;
+    }
+    .kpi-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1vh;
+    }
+    .kpi-label {
+      font-size: clamp(1.8vh, 2.4vh, 3vh);
+      font-weight: 600;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+    }
+    .kpi-value {
+      font-size: clamp(10vh, 16vh, 20vh);
+      font-weight: 900;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+    .kpi-divider {
+      width: 1px;
+      align-self: stretch;
+      margin: 1vh 0;
+    }
+    .kpi-progress-wrap {
+      width: 100%;
+      max-width: 700px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.2vh;
+    }
+    .kpi-progress-bar {
+      width: 100%;
+      height: clamp(6px, 0.7vh, 10px);
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(212,169,78,0.15);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .kpi-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #a5823f, #d4a94e);
+      border-radius: inherit;
+      box-shadow: 0 0 14px rgba(212,169,78,0.4);
+      transition: width 0.3s ease;
+    }
+    .kpi-progress-label {
+      font-size: clamp(1.6vh, 2.2vh, 2.8vh);
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+    }
+    .kpi-time-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5vh;
+    }
+    .kpi-time-label {
+      font-size: clamp(1.4vh, 1.8vh, 2.2vh);
+      font-weight: 600;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+    }
+    .kpi-time-value {
+      font-size: clamp(6vh, 9vh, 11vh);
+      font-weight: 900;
+      line-height: 1;
+    }
+    .kpi-time-unit {
+      font-size: clamp(1.4vh, 1.8vh, 2.2vh);
+      font-weight: 600;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+    }
+
+    /* ===== SLIDE 4: ЗАГРУЗКА ОПЕНСПЕЙСА ===== */
+    .os-main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1.55fr 1fr;
+      grid-template-rows: 1fr;
+      gap: 2.5vw;
+      min-height: 0;
+      position: relative;
+      z-index: 2;
+    }
+    .os-left-col {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5vh;
+      min-width: 0;
+      min-height: 0;
+    }
+    .os-left-col .title-block { margin-bottom: 0; }
+    #osZones {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 1vh;
+      min-height: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      overscroll-behavior: contain;
+      scrollbar-width: none;
+    }
+    #osZones::-webkit-scrollbar { width: 5px; }
+    #osZones::-webkit-scrollbar-track { background: transparent; }
+    #osZones::-webkit-scrollbar-thumb { background: rgba(212,169,78,.28); border-radius: 999px; }
+    #osZones::-webkit-scrollbar-thumb:hover { background: rgba(212,169,78,.45); }
+    .os-zone {
+      display: grid;
+      grid-template-columns: 7vh 1fr auto;
+      align-items: center;
+      gap: 1.6vw;
+      background: var(--bg-card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 1.3vh 2vw;
+      animation: slideIn .5s ease both;
+    }
+    @keyframes slideIn { from { opacity: 0; transform: translateX(-24px); } to { opacity: 1; transform: none; } }
+
+    .os-zone-icon {
+      width: 6.5vh; height: 6.5vh; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      background: radial-gradient(circle at 30% 30%, rgba(42,35,17,.5), #1c1c1f);
+      border: 1px solid var(--line-gold);
+    }
+    .os-zone-icon svg { width: 3.6vh; height: 3.6vh; }
+
+    .os-zone-info { min-width: 0; }
+    .os-zone-info .os-zname {
+      font-size: 2.8vh; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .os-zone-info .os-zmeta {
+      font-size: 1.6vh; color: var(--text-dim); margin-top: .4vh; letter-spacing: 1px;
+    }
+    .os-zone-bar-bg {
+      margin-top: 1.2vh; height: 1.4vh; border-radius: .7vh;
+      background: var(--bg-card2); border: 1px solid var(--line); overflow: hidden;
+    }
+    .os-zone-bar {
+      height: 100%; border-radius: .7vh;
+      background: linear-gradient(90deg, #a5823f, var(--gold), var(--gold-hi));
+      box-shadow: 0 0 12px rgba(212,169,78,.4);
+      transition: width 1s ease;
+    }
+    .os-zone-bar.full { background: linear-gradient(90deg, #7a2d2d, var(--red)); box-shadow: 0 0 12px rgba(248,113,113,.35); }
+
+    .os-zone-stat { text-align: right; min-width: 12vw; }
+    .os-zone-stat .os-pct {
+      font-size: 4.2vh; font-weight: 800; font-variant-numeric: tabular-nums;
+      background: linear-gradient(180deg, var(--gold-hi), var(--gold));
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .os-zone-stat .os-pct.full { background: linear-gradient(180deg, #ffb1b1, var(--red)); -webkit-background-clip: text; background-clip: text; }
+    .os-zone-stat .os-occ { font-size: 1.7vh; color: var(--text-dim); margin-top: .3vh; font-variant-numeric: tabular-nums; }
+    .os-zone-stat .os-status {
+      display: inline-block; margin-top: .6vh; padding: .4vh 1vw;
+      font-size: 1.3vh; letter-spacing: 2px; text-transform: uppercase; font-weight: 700;
+      border-radius: 100px; border: 1px solid var(--line-gold); color: var(--green);
+    }
+    .os-zone-stat .os-status.busy { color: var(--gold); }
+    .os-zone-stat .os-status.full { color: var(--red); border-color: #5a2626; }
+
+    .os-total-card {
+      background: linear-gradient(160deg, #1d1a12, var(--bg-card) 55%);
+      border: 1px solid var(--line-gold); border-radius: 24px;
+      box-shadow: 0 0 60px rgba(212,169,78,.14), inset 0 1px 0 rgba(240,213,138,.12);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 2.8vh 2vw; text-align: center; position: relative; overflow: hidden;
+      height: 100%;
+      min-height: 0;
+    }
+    .os-total-card::before {
+      content: ''; position: absolute; top: -30%; left: -30%; width: 80%; height: 80%;
+      background: radial-gradient(circle, rgba(212,169,78,.10), transparent 70%);
+    }
+    .os-total-label { font-size: 1.9vh; color: var(--gold); letter-spacing: 6px; text-transform: uppercase; font-weight: 600; margin-bottom: 1.6vh; position: relative; z-index: 1; }
+
+    .os-gauge { position: relative; width: 28vh; height: 28vh; }
+    .os-gauge svg { width: 100%; height: 100%; transform: rotate(-90deg); overflow: hidden; }
+    .os-gauge .os-track { stroke: var(--bg-card2); }
+    .os-gauge .os-fill { stroke: url(#gOsGold); stroke-linecap: round; filter: drop-shadow(0 0 12px rgba(212,169,78,.55)); transition: stroke-dashoffset 1.2s ease; }
+    .os-gauge-center {
+      position: absolute; inset: 0; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+    }
+    .os-gauge-center .os-num {
+      font-size: 8vh; font-weight: 900; line-height: 1; font-variant-numeric: tabular-nums;
+      background: linear-gradient(180deg, var(--gold-hi), var(--gold) 55%, #a5823f);
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .os-gauge-center .os-lbl { font-size: 1.8vh; color: var(--text-dim); letter-spacing: 4px; text-transform: uppercase; margin-top: 1vh; }
+
+    .os-sep { width: 60%; height: 1px; background: linear-gradient(90deg, transparent, var(--gold-dim), transparent); margin: 2vh 0; position: relative; }
+    .os-sep::after { content: '◆'; position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); color: var(--gold); font-size: 1.2vh; }
+
+    .os-mini-stats { display: flex; gap: 1.5vw; width: 100%; justify-content: center; }
+    .os-mini {
+      flex: 1; max-width: 11vw;
+      background: rgba(11,11,13,.5); border: 1px solid var(--line-gold);
+      border-radius: 14px; padding: 1.6vh 1vw;
+    }
+    .os-mini b { display: block; font-size: 3.4vh; font-weight: 800; font-variant-numeric: tabular-nums; color: var(--text); }
+    .os-mini span { font-size: 1.4vh; color: var(--text-dim); letter-spacing: 2px; text-transform: uppercase; }
+
+    .os-updated {
+      margin-top: 2.2vh; display: flex; align-items: center; gap: 10px;
+      border: 1px solid var(--line-gold); border-radius: 100px;
+      padding: 1vh 2vw; background: rgba(11,11,13,.5);
+      font-size: 1.6vh; letter-spacing: 2px; color: var(--gold-hi); text-transform: uppercase;
+      position: relative; z-index: 1; white-space: nowrap;
+    }
+    .os-updated svg { width: 2.2vh; height: 2.2vh; stroke: var(--gold); }
+  </style>
+</head>
+<body>
+
+<svg class="deco tr" width="420" height="420" viewBox="0 0 420 420" fill="none">
+  <circle cx="210" cy="210" r="200" stroke="currentColor" stroke-opacity=".25" stroke-dasharray="2 14" stroke-width="3" class="deco-stroke"/>
+  <circle cx="210" cy="210" r="160" stroke="currentColor" stroke-opacity=".12" stroke-width="1.5" class="deco-stroke"/>
+</svg>
+<svg class="deco bl" width="460" height="460" viewBox="0 0 460 460" fill="none">
+  <circle cx="230" cy="230" r="220" stroke="currentColor" stroke-opacity=".2" stroke-dasharray="2 14" stroke-width="3" class="deco-stroke"/>
+  <circle cx="230" cy="230" r="175" stroke="currentColor" stroke-opacity=".1" stroke-width="1.5" class="deco-stroke"/>
+</svg>
+
+<!-- ===== SLIDE 1: РЕЙТИНГ ЛИДЕРОВ ===== -->
+<div id="stage">
+<div id="slide1" class="slide active">
+
+  <header>
+    <div class="brand">
+      <img id="logoImg" src="" alt="Logo" style="display:none;">
+      <span id="brandTitle">М.И.Т.А.</span>
+    </div>
+    <div class="datetime">
+      <div class="item">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+        <span id="dateNow">—</span>
+      </div>
+      <div class="sep">|</div>
+      <div class="item">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+        <span id="timeNow">—</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="title-block">
+    <h1><span id="titleMain">ТОП ЛИДЕРОВ</span> <span class="gold" id="titleAccent">ДНЯ</span></h1>
+    <p id="subtitle">Кто сегодня привёл больше всего новых клиентов</p>
+  </div>
+
+  <main>
+    <div id="board"></div>
+    <div class="leader-card" id="leaderCard">
+      <svg class="crown" id="crownSvg" viewBox="0 0 64 48" fill="none">
+        <defs>
+          <linearGradient id="gGold" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#f0d58a"/><stop offset="1" stop-color="#a5823f"/>
+          </linearGradient>
+        </defs>
+        <path d="M4 40 L2 12 L18 24 L32 4 L46 24 L62 12 L60 40 Z" fill="url(#gGold)"/>
+        <circle cx="2" cy="10" r="4" fill="url(#gGold)"/>
+        <circle cx="32" cy="3" r="4" fill="url(#gGold)"/>
+        <circle cx="62" cy="10" r="4" fill="url(#gGold)"/>
+        <rect x="4" y="42" width="56" height="5" rx="2.5" fill="url(#gGold)"/>
+      </svg>
+      <div class="leader-label">Лидер дня</div>
+      <div class="leader-name" id="leaderName">—</div>
+      <div class="leader-sep" id="leaderSep"></div>
+      <div class="leader-num" id="leaderNum">0</div>
+      <div class="leader-sub" id="leaderSub">новых клиента</div>
+      <div class="leader-sets" id="leaderSetsBlock">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M8 7h8M6 11h12M9 15h6"/><rect x="3" y="3" width="18" height="18" rx="3"/></svg>
+        Среднее кол-во наборов: <b id="leaderSetsNum" style="margin-left:6px">—</b>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="live-badge" id="liveBadge">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M3 17l5-6 4 3 6-8 3 4"/></svg>
+      <span class="dot"></span>
+      Данные обновляются в режиме реального времени
+    </div>
+  </footer>
+
+  <div class="slide-progress" id="slideProgress1">
+    <div class="slide-progress-fill" id="slideProgressFill1"></div>
+  </div>
+
+</div>
+
+<!-- ===== SLIDE 2: РЕЙТИНГ КЦ ===== -->
+<div id="slide2" class="slide">
+
+  <header>
+    <div class="brand">
+      <img id="logoImg2" src="" alt="Logo" style="display:none;">
+      <span id="brandTitle2">М.И.Т.А.</span>
+    </div>
+    <div class="datetime" id="datetime2">
+      <div class="item">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+        <span id="dateNow2">—</span>
+      </div>
+      <div class="sep">|</div>
+      <div class="item">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+        <span id="timeNow2">—</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="kc-main">
+    <div class="title-block">
+      <h1><span id="kcTitle">РЕЙТИНГ КЦ</span></h1>
+      <p id="kcSubtitle">Места колл-центров по KPI и выполнению плана за месяц</p>
+    </div>
+    <div class="kc-table" id="kcTable"></div>
+  </div>
+
+  <div class="kc-footer">
+    <div class="kc-info-badge" id="kcInfoBadge">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+      Места распределяются по результатам KPI и выполнению плана колл-центров за месяц
+    </div>
+  </div>
+
+  <div class="slide-progress" id="slideProgress2">
+    <div class="slide-progress-fill" id="slideProgressFill2"></div>
+  </div>
+
+</div>
+
+<!-- ===== SLIDE 3: ЦЕЛЬ И ФАКТ ===== -->
+<div id="slide3" class="slide">
+
+  <header>
+    <div class="brand">
+      <img id="logoImg3" src="" alt="Logo" style="display:none;">
+      <span id="brandTitle3">М.И.Т.А.</span>
+    </div>
+    <div class="datetime" id="datetime3">
+      <div class="item">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+        <span id="dateNow3">—</span>
+      </div>
+      <div class="sep">|</div>
+      <div class="item">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+        <span id="timeNow3">—</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="title-block">
+    <h1><span id="kpiTitle">ЦЕЛЬ И ФАКТ</span></h1>
+    <p id="kpiSubtitle">Текущий прогресс к поставленной цели</p>
+  </div>
+
+  <div class="kpi-main">
+    <div class="kpi-grid">
+      <div class="kpi-col">
+        <div class="kpi-label" id="kpiTargetLabel">Цель</div>
+        <div class="kpi-value" id="kpiTargetValue">900</div>
+      </div>
+      <div class="kpi-divider" id="kpiDivider"></div>
+      <div class="kpi-col">
+        <div class="kpi-label" id="kpiFactLabel">Факт</div>
+        <div class="kpi-value" id="kpiFactValue">428</div>
+      </div>
+    </div>
+
+    <div class="kpi-progress-wrap">
+      <div class="kpi-progress-bar">
+        <div class="kpi-progress-fill" id="kpiProgressFill"></div>
+      </div>
+      <div class="kpi-progress-label" id="kpiProgressLabel">47,6% от цели</div>
+    </div>
+
+    <div class="kpi-time-block">
+      <div class="kpi-time-label" id="kpiTimeLabel">До цели</div>
+      <div class="kpi-time-value" id="kpiTimeValue">15</div>
+      <div class="kpi-time-unit" id="kpiTimeUnit">Месяцев</div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="live-badge" id="liveBadge3">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M3 17l5-6 4 3 6-8 3 4"/></svg>
+      <span class="dot"></span>
+      Показатели обновляются в режиме реального времени
+    </div>
+  </footer>
+
+  <div class="slide-progress" id="slideProgress3">
+    <div class="slide-progress-fill" id="slideProgressFill3"></div>
+  </div>
+
+</div>
+
+<!-- ===== SLIDE 4: ЗАГРУЗКА ОПЕНСПЕЙСА ===== -->
+<div id="slide4" class="slide">
+
+  <svg width="0" height="0" style="position:absolute">
+    <defs>
+      <linearGradient id="gOsGold" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#f0d58a"/><stop offset="1" stop-color="#a5823f"/>
+      </linearGradient>
+    </defs>
+  </svg>
+
+  <header>
+    <div class="brand">
+      <img id="logoImg4" src="" alt="Logo" style="display:none;">
+      <span id="brandTitle4">М.И.Т.А.</span>
+    </div>
+    <div class="datetime" id="datetime4">
+      <div class="item">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+        <span id="dateNow4">—</span>
+      </div>
+      <div class="sep">|</div>
+      <div class="item">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+        <span id="timeNow4">—</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="os-main">
+    <div class="os-left-col">
+      <div class="title-block">
+        <h1><span id="osTitle">ЗАГРУЗКА ОПЕНСПЕЙСА</span></h1>
+        <p id="osSubtitle">Занятость рабочих мест по зонам в реальном времени</p>
+      </div>
+      <div id="osZones"></div>
+    </div>
+
+    <div class="os-total-card">
+      <div class="os-total-label">Общая загрузка офиса</div>
+      <div class="os-gauge">
+        <svg viewBox="0 0 200 200">
+          <circle class="os-track" cx="100" cy="100" r="88" fill="none" stroke-width="14"/>
+          <circle class="os-fill" id="osGaugeFill" cx="100" cy="100" r="88" fill="none" stroke-width="14"
+                  stroke-dasharray="552.9" stroke-dashoffset="552.9"/>
+        </svg>
+        <div class="os-gauge-center">
+          <div class="os-num" id="osTotalPct">0%</div>
+          <div class="os-lbl">занято мест</div>
+        </div>
+      </div>
+      <div class="os-sep"></div>
+      <div class="os-mini-stats">
+        <div class="os-mini"><b id="osStTotal">0</b><span>Всего мест</span></div>
+        <div class="os-mini"><b id="osStOcc">0</b><span>Занято</span></div>
+        <div class="os-mini"><b id="osStFree" style="color:var(--green)">0</b><span>Свободно</span></div>
+      </div>
+      <div class="os-updated">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+        Последнее обновление: <b id="osUpdTime" style="margin-left:6px">—</b>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="live-badge" id="liveBadge4">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M3 17l5-6 4 3 6-8 3 4"/></svg>
+      <span class="dot"></span>
+      Данные о занятости обновляются автоматически
+    </div>
+  </footer>
+
+  <div class="slide-progress" id="slideProgress4">
+    <div class="slide-progress-fill" id="slideProgressFill4"></div>
+  </div>
+
+</div>
+</div>
+
+<script src="scripts/preview.js"></script>
+</body>
+</html>

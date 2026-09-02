@@ -1,0 +1,187 @@
+{
+  "settings": {
+    "title": "ТОП ЛИДЕРОВ",
+    "titleAccent": "МЕСЯЦА",
+    "subtitle": "Новый месяц — новые достижения",
+    "logo": "../assets/logo.png",
+    "bgColor": "#ffffff",
+    "cardColor": "#000000",
+    "accentColor": "#d4a94e",
+    "accentColorHi": "#f0d58a",
+    "textColor": "#ffffff",
+    "textDim": "#9b988c",
+    "greenColor": "#4ade80",
+    "fontFamily": "Montserrat, Segoe UI, Arial, sans-serif",
+    "showCrown": true,
+    "showLiveBadge": true,
+    "bgImage": "../assets/bg.png",
+    "previewScale": 1
+  },
+  "leaders": [
+    {
+      "id": "demo1",
+      "name": "Черепанова Елена",
+      "today": 24,
+      "delta": 8,
+      "last": "13:37",
+      "avatar": "demo1.png",
+      "avgLeads": 38,
+      "avgSets": 336,
+      "dept": "Call-центр №1"
+    },
+    {
+      "id": "demo2",
+      "name": "Хусаинова Динара",
+      "today": 111,
+      "delta": 6,
+      "last": "13:22",
+      "avatar": "demo2.png",
+      "avgLeads": 36,
+      "avgSets": 502,
+      "dept": "Call-центр №3"
+    },
+    {
+      "id": "demo3",
+      "name": "Орешкина Наталия",
+      "today": 17,
+      "delta": 5,
+      "last": "13:41",
+      "avatar": "demo3.png",
+      "avgLeads": 35,
+      "avgSets": 552,
+      "dept": "Call-центр №4"
+    },
+    {
+      "id": "demo4",
+      "name": "Усов Михаил",
+      "today": 14,
+      "delta": 4,
+      "last": "13:05",
+      "avatar": "demo4.png",
+      "avgLeads": 34,
+      "avgSets": 518,
+      "dept": "Call-центр №4"
+    },
+    {
+      "id": "demo5",
+      "name": "Пашенцева Анастасия",
+      "today": 12,
+      "delta": 3,
+      "last": "12:58",
+      "avatar": "demo5.png",
+      "avgLeads": 32,
+      "avgSets": 551,
+      "dept": "Call-центр №3"
+    },
+    {
+      "id": "demo6",
+      "name": "Биктимирова Румия",
+      "today": 10,
+      "delta": 2,
+      "last": "13:30",
+      "avatar": "demo6.png",
+      "avgLeads": 32,
+      "avgSets": 497,
+      "dept": "Call-центр №1"
+    }
+  ],
+  "callCenters": [
+    {
+      "id": "kc1",
+      "name": "КЦ 1",
+      "today": 0,
+      "delta": 0,
+      "avatar": "kc1.png",
+      "done": 0,
+      "kpiRank": 3,
+      "planRank": 1
+    },
+    {
+      "id": "kc2",
+      "name": "КЦ 2",
+      "today": 0,
+      "delta": 0,
+      "avatar": "kc2.png",
+      "done": 0,
+      "kpiRank": 2,
+      "planRank": 4
+    },
+    {
+      "id": "kc3",
+      "name": "КЦ 3",
+      "today": 0,
+      "delta": 0,
+      "avatar": "kc3.png",
+      "done": 0,
+      "kpiRank": 3,
+      "planRank": 2
+    },
+    {
+      "id": "kc4",
+      "name": "КЦ 4",
+      "today": 0,
+      "delta": 0,
+      "avatar": "kc4.png",
+      "done": 0,
+      "kpiRank": 1,
+      "planRank": 3
+    }
+  ],
+  "kpi": {
+    "target": 900,
+    "fact": 428,
+    "monthsToGoal": 15
+  },
+  "openspace": {
+    "title": "ЗАГРУЗКА ОПЕНСПЕЙСА",
+    "subtitle": "Занятость рабочих мест по зонам в реальном времени",
+    "zones": [
+      {
+        "name": "Отдел продаж №1",
+        "total": 23,
+        "occupied": 20
+      },
+      {
+        "name": "Отдел продаж №2",
+        "total": 21,
+        "occupied": 16
+      },
+      {
+        "name": "Отдел тестов",
+        "total": 20,
+        "occupied": 12
+      },
+      {
+        "name": "Call-центр №1",
+        "total": 21,
+        "occupied": 19
+      },
+      {
+        "name": "Call-центр №2",
+        "total": 62,
+        "occupied": 40
+      },
+      {
+        "name": "Call-центр №3",
+        "total": 21,
+        "occupied": 16
+      },
+      {
+        "name": "Call-центр №4",
+        "total": 20,
+        "occupied": 14
+      },
+      {
+        "name": "Отдел продаж Рекрутинг",
+        "total": 21,
+        "occupied": 7
+      },
+      {
+        "name": "Отдел Авито и Рекрутинга",
+        "total": 21,
+        "occupied": 17
+      }
+    ],
+    "totalPlaces": 301
+  }
+}

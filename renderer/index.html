@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; img-src 'self' file: data:;">
+  <title>Leaderboard Manager</title>
+  <link rel="stylesheet" href="styles/admin.css">
+</head>
+<body>
+
+<header class="app-header">
+  <div class="app-brand">
+    <svg width="28" height="28" viewBox="0 0 64 48" fill="none">
+      <defs><linearGradient id="hg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f0d58a"/><stop offset="1" stop-color="#a5823f"/></linearGradient></defs>
+      <path d="M4 40 L2 12 L18 24 L32 4 L46 24 L62 12 L60 40 Z" fill="url(#hg)"/>
+      <circle cx="2" cy="10" r="4" fill="url(#hg)"/>
+      <circle cx="32" cy="3" r="4" fill="url(#hg)"/>
+      <circle cx="62" cy="10" r="4" fill="url(#hg)"/>
+      <rect x="4" y="42" width="56" height="5" rx="2.5" fill="url(#hg)"/>
+    </svg>
+    <span>Leaderboard Manager</span>
+  </div>
+  <div class="app-actions">
+    <button class="btn btn-outline" id="btnPreview">Открыть превью</button>
+    <button class="btn btn-success" id="btnSave">Сохранить</button>
+  </div>
+</header>
+
+<div class="tabs-bar">
+  <button class="tab active" data-tab="leaders">Лидеры</button>
+  <button class="tab" data-tab="styles">Стили</button>
+  <button class="tab" data-tab="header">Шапка</button>
+  <button class="tab" data-tab="avatars">Аватарки</button>
+  <button class="tab" data-tab="callcenters">КЦ</button>
+  <button class="tab" data-tab="kpi">KPI</button>
+  <button class="tab" data-tab="openspace">Опенспейс</button>
+  <button class="tab" data-tab="data">Экспорт / Импорт</button>
+</div>
+
+<div class="main-content">
+
+  <!-- ТАБ: ЛИДЕРЫ -->
+  <div class="tab-panel active" id="tab-leaders">
+    <div class="panel-header">
+      <h2>Управление лидерами</h2>
+      <button class="btn btn-primary" id="btnAddLeader">+ Добавить лидера</button>
+    </div>
+    <div class="leaders-list" id="leadersList"></div>
+  </div>
+
+  <!-- ТАБ: СТИЛИ -->
+  <div class="tab-panel" id="tab-styles">
+    <div class="panel-header">
+      <h2>Настройка стилей</h2>
+    </div>
+    <div class="styles-grid">
+      <div class="style-group">
+        <label>Фон (основной)</label>
+        <div class="color-input"><input type="color" id="styleBgColor" value="#0b0b0d"><span class="color-val" id="valBgColor">#0b0b0d</span></div>
+      </div>
+      <div class="style-group">
+        <label>Цвет карточек</label>
+        <div class="color-input"><input type="color" id="styleCardColor" value="#151517"><span class="color-val" id="valCardColor">#151517</span></div>
+      </div>
+      <div class="style-group">
+        <label>Акцент (золото)</label>
+        <div class="color-input"><input type="color" id="styleAccentColor" value="#d4a94e"><span class="color-val" id="valAccentColor">#d4a94e</span></div>
+      </div>
+      <div class="style-group">
+        <label>Акцент (яркий)</label>
+        <div class="color-input"><input type="color" id="styleAccentHi" value="#f0d58a"><span class="color-val" id="valAccentHi">#f0d58a</span></div>
+      </div>
+      <div class="style-group">
+        <label>Цвет текста</label>
+        <div class="color-input"><input type="color" id="styleTextColor" value="#f2f0ea"><span class="color-val" id="valTextColor">#f2f0ea</span></div>
+      </div>
+      <div class="style-group">
+        <label>Приглушённый текст</label>
+        <div class="color-input"><input type="color" id="styleTextDim" value="#9b988c"><span class="color-val" id="valTextDim">#9b988c</span></div>
+      </div>
+      <div class="style-group">
+        <label>Зелёный (дельта)</label>
+        <div class="color-input"><input type="color" id="styleGreen" value="#4ade80"><span class="color-val" id="valGreen">#4ade80</span></div>
+      </div>
+      <div class="style-group">
+        <label>Шрифт</label>
+        <select id="styleFontFamily">
+          <option value="Montserrat, Segoe UI, Arial, sans-serif">Montserrat</option>
+          <option value="'Segoe UI', Roboto, Arial, sans-serif">Segoe UI</option>
+          <option value="Roboto, Arial, sans-serif">Roboto</option>
+          <option value="Arial, sans-serif">Arial</option>
+          <option value="'Times New Roman', serif">Times New Roman</option>
+          <option value="Georgia, serif">Georgia</option>
+        </select>
+      </div>
+      <div class="style-group">
+        <label><input type="checkbox" id="styleShowCrown" checked> Показывать корону</label>
+      </div>
+      <div class="style-group">
+        <label><input type="checkbox" id="styleShowLive" checked> Показывать "Live" бейдж</label>
+      </div>
+      <div class="style-group">
+        <label>Масштаб превью: <span id="valPreviewScale">100</span>%</label>
+        <div class="color-input" style="width:100%;">
+          <input type="range" id="stylePreviewScale" min="70" max="200" step="5" value="100" style="width:100%;">
+        </div>
+      </div>
+      <div class="style-group" style="grid-column: 1 / -1;">
+        <label>Фоновое изображение</label>
+        <div class="logo-upload">
+          <div class="logo-preview" id="bgPreview" style="width:120px;height:80px;border-radius:8px;">Нет фона</div>
+          <button class="btn btn-outline" id="btnUploadBg">Загрузить фон</button>
+          <button class="btn btn-danger btn-sm" id="btnRemoveBg" style="display:none;">Удалить фон</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ТАБ: ШАПКА -->
+  <div class="tab-panel" id="tab-header">
+    <div class="panel-header">
+      <h2>Настройка шапки</h2>
+    </div>
+    <div class="header-form">
+      <div class="form-group">
+        <label>Заголовок (основной)</label>
+        <input type="text" id="hdrTitle" value="ТОП ЛИДЕРОВ" placeholder="ТОП ЛИДЕРОВ">
+      </div>
+      <div class="form-group">
+        <label>Заголовок (акцент)</label>
+        <input type="text" id="hdrTitleAccent" value="ДНЯ" placeholder="ДНЯ">
+      </div>
+      <div class="form-group">
+        <label>Подзаголовок</label>
+        <input type="text" id="hdrSubtitle" value="Кто сегодня привёл больше всего новых клиентов" placeholder="Подзаголовок">
+      </div>
+      <div class="form-group">
+        <label>Логотип</label>
+        <div class="logo-upload">
+          <div class="logo-preview" id="logoPreview">Нет логотипа</div>
+          <button class="btn btn-outline" id="btnUploadLogo">Загрузить логотип</button>
+          <button class="btn btn-danger" id="btnRemoveLogo" style="display:none;">Удалить</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ТАБ: АВАТАРКИ -->
+  <div class="tab-panel" id="tab-avatars">
+    <div class="panel-header">
+      <h2>Управление аватарками</h2>
+    </div>
+    <div class="avatars-grid" id="avatarsGrid"></div>
+  </div>
+
+  <!-- ТАБ: КЦ -->
+  <div class="tab-panel" id="tab-callcenters">
+    <div class="panel-header">
+      <h2>Рейтинг колл-центров</h2>
+    </div>
+    <div class="callcenters-list" id="callCentersList"></div>
+  </div>
+
+  <!-- ТАБ: KPI -->
+  <div class="tab-panel" id="tab-kpi">
+    <div class="panel-header">
+      <h2>Настройка KPI — Цель и факт</h2>
+    </div>
+    <div class="kpi-form">
+      <div class="form-group">
+        <label>Цель (целевой показатель)</label>
+        <input type="number" id="kpiTarget" value="900" min="0">
+      </div>
+      <div class="form-group">
+        <label>Факт (текущий показатель)</label>
+        <input type="number" id="kpiFact" value="428" min="0">
+      </div>
+      <div class="form-group">
+        <label>Месяцев до цели</label>
+        <input type="number" id="kpiMonths" value="15" min="0">
+      </div>
+      <div class="kpi-preview">
+        <div class="kpi-preview-label">Процент выполнения:</div>
+        <div class="kpi-preview-value" id="kpiPercentDisplay">47,6%</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ТАБ: ОПЕНСПЕЙС -->
+  <div class="tab-panel" id="tab-openspace">
+    <div class="panel-header">
+      <h2>Загрузка опенспейса</h2>
+    </div>
+    <div class="os-admin-form">
+      <div class="os-admin-grid">
+        <div class="form-group">
+          <label>Заголовок</label>
+          <input type="text" id="osTitle" placeholder="ЗАГРУЗКА ОПЕНСПЕЙСА">
+        </div>
+        <div class="form-group">
+          <label>Подзаголовок</label>
+          <input type="text" id="osSubtitle" placeholder="Занятость рабочих мест по зонам">
+        </div>
+        <div class="form-group">
+          <label>Всего мест (в опенспейсе)</label>
+          <input type="number" id="osTotalPlaces" min="0" placeholder="Например, 104">
+        </div>
+      </div>
+      <div class="panel-header" style="margin-top:18px;margin-bottom:2px;">
+        <h2 style="font-size:15px;color:var(--text-dim);">Зоны</h2>
+      </div>
+      <p class="os-hint">Задайте зоны опенспейса и занятость мест в каждой. Данные будут отображаться на слайде.</p>
+      <div class="os-zones-list" id="osZonesList"></div>
+      <button class="btn btn-primary" id="btnAddZone">+ Добавить зону</button>
+    </div>
+  </div>
+
+  <!-- ТАБ: ЭКСПОРТ / ИМПОРТ -->
+  <div class="tab-panel" id="tab-data">
+    <div class="panel-header">
+      <h2>Экспорт и импорт данных</h2>
+    </div>
+    <div class="data-actions">
+      <div class="data-card">
+        <h3>Экспорт</h3>
+        <p>Сохранить все данные leaderboardа в JSON-файл для резервной копии</p>
+        <button class="btn btn-primary" id="btnExport">Экспорт в JSON</button>
+      </div>
+      <div class="data-card">
+        <h3>Импорт</h3>
+        <p>Загрузить данные из JSON-файла. Текущие данные будут заменены!</p>
+        <button class="btn btn-danger" id="btnImport">Импорт из JSON</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="crop-modal" id="cropModal" hidden>
+  <div class="crop-dialog">
+    <div class="crop-header">
+      <h3>Настроить фото</h3>
+      <button class="btn btn-outline btn-sm" id="cropCloseBtn" type="button">Закрыть</button>
+    </div>
+    <div class="crop-stage-wrap">
+      <div class="crop-stage" id="cropStage">
+        <img id="cropImage" alt="Фото для аватара">
+        <div class="crop-overlay"></div>
+        <div class="crop-circle"></div>
+      </div>
+    </div>
+    <div class="crop-controls">
+      <label>
+        Масштаб
+        <input type="range" id="cropZoom" min="0.4" max="3" step="0.01" value="1">
+      </label>
+    </div>
+    <div class="crop-actions">
+      <button class="btn btn-outline" id="cropCancelBtn" type="button">Отмена</button>
+      <button class="btn btn-success" id="cropSaveBtn" type="button">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="scripts/admin.js"></script>
+</body>
+</html>
