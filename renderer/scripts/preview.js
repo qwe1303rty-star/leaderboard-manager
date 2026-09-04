@@ -14,11 +14,9 @@ function toFileUrl(p) {
 }
 
 const KPI = {
-  target: 900,
-  fact: 428,
-  monthsToGoal: 15
+  projects: { target: 900, fact: 288, months: 8, days: 15 },
+  numbers: { target: 900000, fact: 394000 }
 };
-KPI.progress = Math.min((KPI.fact / KPI.target) * 100, 100);
 
 function plural(n) {
   const a = Math.abs(n) % 100, b = a % 10;
@@ -108,11 +106,73 @@ function applyStyles(s) {
 
   const kcLeaderLabel = document.getElementById('kcLeaderLabel');
   if (kcLeaderLabel) kcLeaderLabel.style.color = s.accentColor;
+
+  // SLIDE 3: РЕЙТИНГ СОТРУДНИКОВ ОП
+  const opRevTitle = document.getElementById('opRevenueTitle');
+  if (opRevTitle) {
+    opRevTitle.style.background = `linear-gradient(180deg, ${s.accentColorHi}, ${s.accentColor} 60%, ${s.accentColor})`;
+    opRevTitle.style.webkitBackgroundClip = 'text';
+    opRevTitle.style.webkitTextFillColor = 'transparent';
+  }
+  const opRevSub = document.getElementById('opRevenueSubtitle');
+  if (opRevSub) opRevSub.style.color = s.textDim;
+  document.getElementById('brandTitle5').style.color = s.accentColor;
+  const dt5 = document.getElementById('datetime5');
+  if (dt5) {
+    dt5.style.borderColor = s.accentColor + '1e';
+    dt5.querySelectorAll('.item').forEach(item => {
+      item.style.color = s.accentColorHi;
+      const svg = item.querySelector('svg');
+      if (svg) svg.style.stroke = s.accentColor;
+    });
+    const sep5 = dt5.querySelector('.sep');
+    if (sep5) sep5.style.color = s.accentColor + '88';
+  }
+  const lb3 = document.getElementById('liveBadge3');
+  if (lb3) {
+    lb3.style.borderColor = 'rgba(255,255,255,.1)';
+    lb3.style.color = s.textDim;
+    const dot = lb3.querySelector('.dot');
+    if (dot) dot.style.backgroundColor = s.greenColor;
+    const svg = lb3.querySelector('svg');
+    if (svg) svg.style.stroke = s.accentColor;
+  }
+
+  // SLIDE 4: РЕЙТИНГ ОП ПО ПЛАНУ
+  const opPlanTitle = document.getElementById('opPlanTitle');
+  if (opPlanTitle) {
+    opPlanTitle.style.background = `linear-gradient(180deg, ${s.accentColorHi}, ${s.accentColor} 60%, ${s.accentColor})`;
+    opPlanTitle.style.webkitBackgroundClip = 'text';
+    opPlanTitle.style.webkitTextFillColor = 'transparent';
+  }
+  const opPlanSub = document.getElementById('opPlanSubtitle');
+  if (opPlanSub) opPlanSub.style.color = s.textDim;
+  document.getElementById('brandTitle4').style.color = s.accentColor;
+  const dt4 = document.getElementById('datetime4');
+  if (dt4) {
+    dt4.style.borderColor = s.accentColor + '1e';
+    dt4.querySelectorAll('.item').forEach(item => {
+      item.style.color = s.accentColorHi;
+      const svg = item.querySelector('svg');
+      if (svg) svg.style.stroke = s.accentColor;
+    });
+    const sep4 = dt4.querySelector('.sep');
+    if (sep4) sep4.style.color = s.accentColor + '88';
+  }
+  const lb4 = document.getElementById('liveBadge4');
+  if (lb4) {
+    lb4.style.borderColor = 'rgba(255,255,255,.1)';
+    lb4.style.color = s.textDim;
+    const dot = lb4.querySelector('.dot');
+    if (dot) dot.style.backgroundColor = s.greenColor;
+    const svg = lb4.querySelector('svg');
+    if (svg) svg.style.stroke = s.accentColor;
+  }
 }
 
 function render(data) {
   const s = data.settings;
-  const sorted = data.leaders.slice().sort((a, b) => (b.avgLeads - a.avgLeads) || (b.avgSets - a.avgSets));
+  const sorted = data.leaders.slice().sort((a, b) => (b.avgLeads - a.avgLeads));
 
   applyStyles(s);
 
@@ -164,8 +224,7 @@ function render(data) {
       `<div class="rank">${i + 1}</div>` +
       avatarHtml +
       `<div class="lb-namewrap"><div class="name" style="color:${s.textColor}">${e.name}</div>${e.dept ? `<div class="lb-dept">${esc(e.dept)}</div>` : ''}</div>` +
-      `<div class="lb-num"><span>лиды</span><b style="color:${i === 0 ? s.accentColorHi : s.textColor}">${e.avgLeads}</b></div>` +
-      `<div class="lb-num"><span>наборы</span><b style="color:${i === 0 ? s.accentColorHi : s.textColor}">${e.avgSets}</b></div>`;
+      `<div class="lb-num"><span>лиды</span><b style="color:${i === 0 ? s.accentColorHi : s.textColor}">${e.avgLeads}</b></div>`;
     board.appendChild(row);
   });
 
@@ -199,9 +258,6 @@ function render(data) {
     document.getElementById('leaderNum').style.webkitTextFillColor = 'transparent';
     document.getElementById('leaderSub').textContent = 'среднее кол-во лидов';
     document.getElementById('leaderSub').style.color = s.textDim;
-    document.getElementById('leaderSetsNum').textContent = top.avgSets;
-    document.getElementById('leaderSetsBlock').style.borderColor = s.accentColor + '33';
-    document.getElementById('leaderSetsBlock').style.color = s.accentColorHi;
   }
 
   const liveBadge = document.getElementById('liveBadge');
@@ -216,6 +272,8 @@ function render(data) {
   if (leaderLabel) leaderLabel.style.color = s.accentColor;
 
   renderCallCenters(data);
+  renderOpRevenue(data);
+  renderOpPlan(data);
   renderKpi(data);
   renderOpenspace(data);
 }
@@ -298,14 +356,120 @@ function renderCallCenters(data) {
   }
 }
 
+function fmtRub(n) {
+  return new Intl.NumberFormat('ru-RU').format(Number(n) || 0) + ' ₽';
+}
+
+function renderOpRevenue(data) {
+  const s = data.settings;
+  const list = data.opRanking || [];
+
+  function medal(i) {
+    if (i >= 3) return '';
+    const medals = [
+      { c1: s.accentColorHi, c2: s.accentColor, t: '#1a1408' },
+      { c1: '#e8e8e8', c2: '#9a9a9a', t: '#1a1a1a' },
+      { c1: '#d79a58', c2: '#8a5a28', t: '#1a1408' }
+    ];
+    const m = medals[i];
+    return `<svg viewBox="0 0 40 48" width="4.4vh" height="5.2vh" aria-hidden="true">
+      <defs>
+        <linearGradient id="opmed${i}" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="${m.c1}"/><stop offset="1" stop-color="${m.c2}"/>
+        </linearGradient>
+      </defs>
+      <path d="M8 2 H32 L28 22 H12 Z" fill="url(#opmed${i})"/>
+      <circle cx="20" cy="32" r="12" fill="url(#opmed${i})"/>
+      <text x="20" y="37" text-anchor="middle" font-size="14" font-weight="bold" fill="${m.t}">${i + 1}</text>
+    </svg>`;
+  }
+
+  const esc = (t) => String(t == null ? '' : t)
+    .replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+  const container = document.getElementById('opRevenueList');
+  if (!container) return;
+  container.innerHTML = '';
+
+  list.forEach((o, i) => {
+    const row = document.createElement('div');
+    row.className = 'op-item';
+    const chips = [];
+    if (o.tariffs) chips.push(`<span class="op-chip op-chip-tariff">${pluralTariffs(o.tariffs)}</span>`);
+    if (o.tests) chips.push(`<span class="op-chip op-chip-test">${pluralTests(o.tests)}</span>`);
+    row.innerHTML =
+      `<div class="op-rank">${medal(i)}</div>` +
+      `<div class="op-person"><div class="op-name" style="color:${s.textColor}">${esc(o.name)}</div>` +
+      (o.dept ? `<div class="op-dept">${esc(o.dept)}</div>` : '') +
+      (chips.length ? `<div class="op-chips">${chips.join('')}</div>` : '') +
+      `</div>` +
+      `<div class="op-amount" style="color:${s.accentColorHi}">${fmtRub(o.amount)}<small>выручка</small></div>`;
+    container.appendChild(row);
+  });
+}
+
+function pluralTariffs(n) {
+  const a = Math.abs(n) % 100, b = a % 10;
+  if (a > 10 && a < 20) return `${n} тарифов`;
+  if (b > 1 && b < 5) return `${n} тарифа`;
+  if (b === 1) return `${n} тариф`;
+  return `${n} тарифов`;
+}
+
+function pluralTests(n) {
+  const a = Math.abs(n) % 100, b = a % 10;
+  if (a > 10 && a < 20) return `${n} тестов`;
+  if (b > 1 && b < 5) return `${n} теста`;
+  if (b === 1) return `${n} тест`;
+  return `${n} тестов`;
+}
+
+function renderOpPlan(data) {
+  const s = data.settings;
+  const list = data.opPlanRanking || [];
+
+  function medal(i) {
+    if (i >= 3) return '';
+    const medals = [
+      { c1: s.accentColorHi, c2: s.accentColor, t: '#1a1408' },
+      { c1: '#e8e8e8', c2: '#9a9a9a', t: '#1a1a1a' },
+      { c1: '#d79a58', c2: '#8a5a28', t: '#1a1408' }
+    ];
+    const m = medals[i];
+    return `<svg viewBox="0 0 40 48" width="4.4vh" height="5.2vh" aria-hidden="true">
+      <defs>
+        <linearGradient id="oppmed${i}" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="${m.c1}"/><stop offset="1" stop-color="${m.c2}"/>
+        </linearGradient>
+      </defs>
+      <path d="M8 2 H32 L28 22 H12 Z" fill="url(#oppmed${i})"/>
+      <circle cx="20" cy="32" r="12" fill="url(#oppmed${i})"/>
+      <text x="20" y="37" text-anchor="middle" font-size="14" font-weight="bold" fill="${m.t}">${i + 1}</text>
+    </svg>`;
+  }
+
+  const esc = (t) => String(t == null ? '' : t)
+    .replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+  const container = document.getElementById('opPlanList');
+  if (!container) return;
+  container.innerHTML = '';
+
+  list.forEach((o, i) => {
+    const row = document.createElement('div');
+    row.className = 'op-item';
+    row.innerHTML =
+      `<div class="op-rank">${medal(i)}</div>` +
+      `<div class="op-person"><div class="op-name" style="color:${s.textColor}">${esc(o.name)}</div>` +
+      `<div class="op-meta">выполнение плана</div></div>`;
+    container.appendChild(row);
+  });
+}
+
 function renderKpi(data) {
   const s = data.settings;
-  const kpi = data.kpi || KPI;
-  const target = kpi.target || KPI.target;
-  const fact = kpi.fact || KPI.fact;
-  const monthsToGoal = kpi.monthsToGoal || KPI.monthsToGoal;
-  const pct = Math.min((fact / target) * 100, 100);
-  const pctStr = pct.toLocaleString('ru-RU', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + '% от цели';
+  const kpi = data.kpi || {};
+  const numbers = kpi.numbers || KPI.numbers;
 
   const kpiTitle = document.getElementById('kpiTitle');
   kpiTitle.style.background = `linear-gradient(180deg, ${s.accentColorHi}, ${s.accentColor} 60%, ${s.accentColor})`;
@@ -313,31 +477,34 @@ function renderKpi(data) {
   kpiTitle.style.webkitTextFillColor = 'transparent';
   document.getElementById('kpiSubtitle').style.color = s.textDim;
 
+  // ЦЕЛЬ / ФАКТ — НОМЕРА
+  const target = Number(numbers.target) || 0;
+  const fact = Number(numbers.fact) || 0;
+  const tgtEl = document.getElementById('kpiTargetValue');
+  tgtEl.textContent = target.toLocaleString('ru-RU');
+  tgtEl.style.background = `linear-gradient(180deg, ${s.accentColorHi}, ${s.accentColor})`;
+  tgtEl.style.webkitBackgroundClip = 'text';
+  tgtEl.style.webkitTextFillColor = 'transparent';
   document.getElementById('kpiTargetLabel').style.color = s.accentColor;
-  const kpiTarget = document.getElementById('kpiTargetValue');
-  kpiTarget.textContent = target;
-  kpiTarget.style.background = `linear-gradient(180deg, ${s.accentColorHi}, ${s.accentColor})`;
-  kpiTarget.style.webkitBackgroundClip = 'text';
-  kpiTarget.style.webkitTextFillColor = 'transparent';
 
+  const fctEl = document.getElementById('kpiFactValue');
+  fctEl.textContent = fact.toLocaleString('ru-RU');
+  fctEl.style.color = s.textColor;
   document.getElementById('kpiFactLabel').style.color = s.textDim;
-  const kpiFact = document.getElementById('kpiFactValue');
-  kpiFact.textContent = fact;
-  kpiFact.style.color = s.textColor;
 
   document.getElementById('kpiDivider').style.background = `linear-gradient(180deg, transparent, ${s.accentColor}55, transparent)`;
 
-  document.getElementById('kpiProgressFill').style.width = pct + '%';
-  document.getElementById('kpiProgressLabel').textContent = pctStr;
-  document.getElementById('kpiProgressLabel').style.color = s.accentColorHi;
+  const pct = target > 0 ? Math.min((fact / target) * 100, 100) : 0;
+  const fill = document.getElementById('kpiProgressFill');
+  if (fill) {
+    fill.style.width = pct + '%';
+    fill.style.background = `linear-gradient(90deg, ${s.accentColor}, ${s.accentColorHi})`;
+  }
+  document.getElementById('kpiProgressLabel').textContent =
+    (target > 0 ? pct.toFixed(1).replace('.', ',') : '0,0') + '% от цели';
 
-  document.getElementById('kpiTimeLabel').style.color = s.textDim;
-  const kpiTimeVal = document.getElementById('kpiTimeValue');
-  kpiTimeVal.textContent = monthsToGoal;
-  kpiTimeVal.style.background = `linear-gradient(180deg, ${s.accentColorHi}, ${s.accentColor})`;
-  kpiTimeVal.style.webkitBackgroundClip = 'text';
-  kpiTimeVal.style.webkitTextFillColor = 'transparent';
-  document.getElementById('kpiTimeUnit').style.color = s.textDim;
+  // ПРОЕКТЫ (слайд 6)
+  renderKpiProj(data);
 
   const logoUrl3 = toFileUrl(s.logo);
   document.getElementById('brandTitle3').style.color = s.accentColor;
@@ -356,13 +523,90 @@ function renderKpi(data) {
     if (sep) sep.style.color = s.accentColor + '88';
   }
 
-  const lb3 = document.getElementById('liveBadge3');
+  const lb3 = document.getElementById('liveBadge5');
   if (lb3) {
     lb3.style.borderColor = 'rgba(255,255,255,.1)';
     lb3.style.color = s.textDim;
     const dot = lb3.querySelector('.dot');
     if (dot) dot.style.backgroundColor = s.greenColor;
     const svg = lb3.querySelector('svg');
+    if (svg) svg.style.stroke = s.accentColor;
+  }
+}
+
+function renderKpiProj(data) {
+  const s = data.settings;
+  const kpi = data.kpi || {};
+  const projects = kpi.projects || KPI.projects;
+
+  const hTitle = document.getElementById('kpiProjTitle');
+  hTitle.style.background = `linear-gradient(180deg, ${s.accentColorHi}, ${s.accentColor} 60%, ${s.accentColor})`;
+  hTitle.style.webkitBackgroundClip = 'text';
+  hTitle.style.webkitTextFillColor = 'transparent';
+  document.getElementById('kpiProjSubtitle').style.color = s.textDim;
+
+  const target = Number(projects.target) || 0;
+  const fact = Number(projects.fact) || 0;
+  const tgtEl = document.getElementById('kpiProjTarget');
+  tgtEl.textContent = target.toLocaleString('ru-RU');
+  tgtEl.style.background = `linear-gradient(180deg, ${s.accentColorHi}, ${s.accentColor})`;
+  tgtEl.style.webkitBackgroundClip = 'text';
+  tgtEl.style.webkitTextFillColor = 'transparent';
+  document.getElementById('kpiProjTargetLabel').style.color = s.accentColor;
+
+  const fctEl = document.getElementById('kpiProjFact');
+  fctEl.textContent = fact.toLocaleString('ru-RU');
+  fctEl.style.color = s.textColor;
+  document.getElementById('kpiProjFactLabel').style.color = s.textDim;
+
+  document.getElementById('kpiProjDivider').style.background = `linear-gradient(180deg, transparent, ${s.accentColor}55, transparent)`;
+
+  const pct = target > 0 ? Math.min((fact / target) * 100, 100) : 0;
+  document.getElementById('kpiProjProgressLabel').textContent =
+    (target > 0 ? pct.toFixed(1).replace('.', ',') : '0,0') + '% от цели';
+  const fill = document.getElementById('kpiProjProgressFill');
+  if (fill) {
+    fill.style.width = pct + '%';
+    fill.style.background = `linear-gradient(90deg, ${s.accentColor}, ${s.accentColorHi})`;
+  }
+
+  document.getElementById('kpiProjTimeLabel').style.color = s.textDim;
+  const months = Number(projects.months) || 0;
+  const days = Number(projects.days) || 0;
+  const monthWord = months === 1 ? 'месяц' : (months >= 2 && months <= 4 ? 'месяца' : 'месяцев');
+  const dayWord = days === 1 ? 'день' : (days >= 2 && days <= 4 ? 'дня' : 'дней');
+  const timeParts = [];
+  if (months > 0) timeParts.push(`${months} ${monthWord}`);
+  if (days > 0) timeParts.push(`${days} ${dayWord}`);
+  const projTime = document.getElementById('kpiProjTime');
+  projTime.textContent = timeParts.length ? timeParts.join(' ') : '—';
+  projTime.style.color = s.accentColorHi;
+
+  // Стилизация шапки слайда 6 (ПРОЕКТЫ)
+  const logoUrl6 = toFileUrl(s.logo);
+  document.getElementById('brandTitle6').style.color = s.accentColor;
+  document.getElementById('logoImg6').style.display = logoUrl6 ? '' : 'none';
+  if (logoUrl6) document.getElementById('logoImg6').src = logoUrl6;
+
+  const dt6 = document.getElementById('datetime6');
+  if (dt6) {
+    dt6.style.borderColor = s.accentColor + '1e';
+    dt6.querySelectorAll('.item').forEach(item => {
+      item.style.color = s.accentColorHi;
+      const svg = item.querySelector('svg');
+      if (svg) svg.style.stroke = s.accentColor;
+    });
+    const sep = dt6.querySelector('.sep');
+    if (sep) sep.style.color = s.accentColor + '88';
+  }
+
+  const lb6 = document.getElementById('liveBadge6');
+  if (lb6) {
+    lb6.style.borderColor = 'rgba(255,255,255,.1)';
+    lb6.style.color = s.textDim;
+    const dot = lb6.querySelector('.dot');
+    if (dot) dot.style.backgroundColor = s.greenColor;
+    const svg = lb6.querySelector('svg');
     if (svg) svg.style.stroke = s.accentColor;
   }
 }
@@ -395,30 +639,30 @@ function renderOpenspace(data) {
   osSubtitle.textContent = os.subtitle || OS_DEFAULT.subtitle;
   osSubtitle.style.color = s.textDim;
 
-  const logoUrl4 = toFileUrl(s.logo);
-  document.getElementById('brandTitle4').style.color = s.accentColor;
-  document.getElementById('logoImg4').style.display = logoUrl4 ? '' : 'none';
-  if (logoUrl4) document.getElementById('logoImg4').src = logoUrl4;
+  const logoUrl7 = toFileUrl(s.logo);
+  document.getElementById('brandTitle7').style.color = s.accentColor;
+  document.getElementById('logoImg7').style.display = logoUrl7 ? '' : 'none';
+  if (logoUrl7) document.getElementById('logoImg7').src = logoUrl7;
 
-  const dt4 = document.getElementById('datetime4');
-  if (dt4) {
-    dt4.style.borderColor = s.accentColor + '1e';
-    dt4.querySelectorAll('.item').forEach(item => {
+  const dt7 = document.getElementById('datetime7');
+  if (dt7) {
+    dt7.style.borderColor = s.accentColor + '1e';
+    dt7.querySelectorAll('.item').forEach(item => {
       item.style.color = s.accentColorHi;
       const svg = item.querySelector('svg');
       if (svg) svg.style.stroke = s.accentColor;
     });
-    const sep = dt4.querySelector('.sep');
+    const sep = dt7.querySelector('.sep');
     if (sep) sep.style.color = s.accentColor + '88';
   }
 
-  const lb4 = document.getElementById('liveBadge4');
-  if (lb4) {
-    lb4.style.borderColor = 'rgba(255,255,255,.1)';
-    lb4.style.color = s.textDim;
-    const dot = lb4.querySelector('.dot');
+  const lb7 = document.getElementById('liveBadge7');
+  if (lb7) {
+    lb7.style.borderColor = 'rgba(255,255,255,.1)';
+    lb7.style.color = s.textDim;
+    const dot = lb7.querySelector('.dot');
     if (dot) dot.style.backgroundColor = s.greenColor;
-    const svg = lb4.querySelector('svg');
+    const svg = lb7.querySelector('svg');
     if (svg) svg.style.stroke = s.accentColor;
   }
 
@@ -615,6 +859,21 @@ function tickClock() {
   const timeNow4 = document.getElementById('timeNow4');
   if (timeNow4) timeNow4.textContent = timeStr;
 
+  const dateNow5 = document.getElementById('dateNow5');
+  if (dateNow5) dateNow5.textContent = dateStr;
+  const timeNow5 = document.getElementById('timeNow5');
+  if (timeNow5) timeNow5.textContent = timeStr;
+
+  const dateNow6 = document.getElementById('dateNow6');
+  if (dateNow6) dateNow6.textContent = dateStr;
+  const timeNow6 = document.getElementById('timeNow6');
+  if (timeNow6) timeNow6.textContent = timeStr;
+
+  const dateNow7 = document.getElementById('dateNow7');
+  if (dateNow7) dateNow7.textContent = dateStr;
+  const timeNow7 = document.getElementById('timeNow7');
+  if (timeNow7) timeNow7.textContent = timeStr;
+
   const kcUpdateTime = document.getElementById('kcUpdateTime');
   if (kcUpdateTime) kcUpdateTime.textContent = timeStr;
 
@@ -630,7 +889,7 @@ async function loadData() {
 let currentSlide = 1;
 let slideRAF = null;
 let slideStartTime = 0;
-const TOTAL_SLIDES = 4;
+const TOTAL_SLIDES = 7;
 
 function rotateSlides() {
   currentSlide = currentSlide >= TOTAL_SLIDES ? 1 : currentSlide + 1;
@@ -638,7 +897,7 @@ function rotateSlides() {
     document.getElementById('slide' + i).classList.toggle('active', currentSlide === i);
   }
   // как только слайд опенспейса показан — сбросить список к верху, пауза 3 c, потом один проход вниз+вверх
-  if (currentSlide === 4 && osScrollEl) {
+  if (currentSlide === 7 && osScrollEl) {
     osScrollStart(osScrollEl);
   }
 }
@@ -651,7 +910,10 @@ function startSlideTimer() {
     document.getElementById('slideProgressFill1'),
     document.getElementById('slideProgressFill2'),
     document.getElementById('slideProgressFill3'),
-    document.getElementById('slideProgressFill4')
+    document.getElementById('slideProgressFill4'),
+    document.getElementById('slideProgressFill5'),
+    document.getElementById('slideProgressFill6'),
+    document.getElementById('slideProgressFill7')
   ];
   fills.forEach(f => { if (f) f.style.width = '0%'; });
 

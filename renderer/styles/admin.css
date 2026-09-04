@@ -356,6 +356,22 @@ body {
   color: var(--primary);
 }
 
+.kpi-section-label {
+  margin-top: 6px;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--primary);
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+}
+.kpi-section-label:first-child {
+  margin-top: 0;
+  border-top: none;
+  padding-top: 0;
+}
+
 /* АВАТАРКИ */
 .avatars-grid {
   display: grid;

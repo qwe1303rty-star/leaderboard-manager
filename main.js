@@ -55,6 +55,8 @@ function copyDirContents(srcDir, destDir, force = false) {
   });
 }
 
+const DATA_VERSION = 3;
+
 function seedUserData() {
   ensureDirectories();
   const dataFile = getDataFile();
@@ -64,7 +66,8 @@ function seedUserData() {
       const existing = JSON.parse(fs.readFileSync(dataFile, 'utf8'));
       const firstLeader = existing?.leaders?.[0]?.name || '';
       const titleAccent = existing?.settings?.titleAccent || '';
-      reseed = titleAccent === 'ДНЯ' || firstLeader === 'Иванов Иван';
+      const legacy = titleAccent === 'ДНЯ' || firstLeader === 'Иванов Иван';
+      reseed = legacy || (existing?._dataVersion !== DATA_VERSION);
     } catch (e) {
       reseed = true;
     }
@@ -72,9 +75,13 @@ function seedUserData() {
   if (reseed) {
     try {
       const packagedData = fs.readFileSync(PACKAGED_DATA, 'utf8');
-      fs.writeFileSync(dataFile, packagedData, 'utf8');
+      let fresh = JSON.parse(packagedData);
+      fresh._dataVersion = DATA_VERSION;
+      fs.writeFileSync(dataFile, JSON.stringify(fresh, null, 2), 'utf8');
     } catch (e) {
-      fs.writeFileSync(dataFile, JSON.stringify(getDefaultData(), null, 2), 'utf8');
+      const fresh = getDefaultData();
+      fresh._dataVersion = DATA_VERSION;
+      fs.writeFileSync(dataFile, JSON.stringify(fresh, null, 2), 'utf8');
     }
   }
   copyDirContents(PACKAGED_AVATARS_DIR, getAvatarsDir(), reseed);
@@ -106,7 +113,7 @@ function getDefaultData() {
       },
       leaders: [],
       callCenters: [],
-      kpi: { target: 900, fact: 428, monthsToGoal: 15 },
+      kpi: { projects: { target: 900, fact: 288, months: 8, days: 15 }, numbers: { target: 900000, fact: 394000 } },
       openspace: { title: 'ЗАГРУЗКА ОПЕНСПЕЙСА', subtitle: 'Занятость рабочих мест по зонам в реальном времени', totalPlaces: 301, zones: [] }
     };
   }
@@ -138,6 +145,10 @@ function loadData() {
       }
       if (!data.kpi) {
         data.kpi = getDefaultData().kpi;
+      } else {
+        const dKpi = getDefaultData().kpi;
+        if (!data.kpi.projects) data.kpi.projects = dKpi.projects;
+        if (!data.kpi.numbers) data.kpi.numbers = dKpi.numbers;
       }
       if (!data.openspace) {
         data.openspace = getDefaultData().openspace;
@@ -171,6 +182,10 @@ function loadData() {
         if (!('avgSets' in l)) l.avgSets = 0;
       });
       (data.callCenters || []).forEach(kc => { kc.avatar = normalizeAvatar(kc.avatar); });
+      if (!Array.isArray(data.opRanking)) data.opRanking = [];
+      if (!Array.isArray(data.opPlanRanking)) data.opPlanRanking = [];
+      (data.opRanking || []).forEach(o => { o.avatar = normalizeAvatar(o.avatar); });
+      (data.opPlanRanking || []).forEach(o => { o.avatar = normalizeAvatar(o.avatar); });
       return data;
     }
   } catch (e) {

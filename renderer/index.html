@@ -33,6 +33,7 @@
   <button class="tab" data-tab="header">Шапка</button>
   <button class="tab" data-tab="avatars">Аватарки</button>
   <button class="tab" data-tab="callcenters">КЦ</button>
+  <button class="tab" data-tab="op">Рейтинг ОП</button>
   <button class="tab" data-tab="kpi">KPI</button>
   <button class="tab" data-tab="openspace">Опенспейс</button>
   <button class="tab" data-tab="data">Экспорт / Импорт</button>
@@ -129,11 +130,11 @@
       </div>
       <div class="form-group">
         <label>Заголовок (акцент)</label>
-        <input type="text" id="hdrTitleAccent" value="ДНЯ" placeholder="ДНЯ">
+        <input type="text" id="hdrTitleAccent" value="МЕСЯЦА" placeholder="МЕСЯЦА">
       </div>
       <div class="form-group">
         <label>Подзаголовок</label>
-        <input type="text" id="hdrSubtitle" value="Кто сегодня привёл больше всего новых клиентов" placeholder="Подзаголовок">
+        <input type="text" id="hdrSubtitle" value="Кто в этом месяце привёл больше всего новых клиентов" placeholder="Подзаголовок">
       </div>
       <div class="form-group">
         <label>Логотип</label>
@@ -168,23 +169,54 @@
       <h2>Настройка KPI — Цель и факт</h2>
     </div>
     <div class="kpi-form">
+      <div class="kpi-section-label">ПРОЕКТЫ (штуки)</div>
       <div class="form-group">
-        <label>Цель (целевой показатель)</label>
-        <input type="number" id="kpiTarget" value="900" min="0">
+        <label>Цель (проектов)</label>
+        <input type="number" id="kpiProjTarget" value="900" min="0">
       </div>
       <div class="form-group">
-        <label>Факт (текущий показатель)</label>
-        <input type="number" id="kpiFact" value="428" min="0">
+        <label>Факт (проектов)</label>
+        <input type="number" id="kpiProjFact" value="288" min="0">
       </div>
       <div class="form-group">
         <label>Месяцев до цели</label>
-        <input type="number" id="kpiMonths" value="15" min="0">
+        <input type="number" id="kpiProjMonths" value="8" min="0">
       </div>
+      <div class="form-group">
+        <label>Дней до цели</label>
+        <input type="number" id="kpiProjDays" value="15" min="0">
+      </div>
+
+      <div class="kpi-section-label">НОМЕРА</div>
+      <div class="form-group">
+        <label>Цель (номеров, ₽)</label>
+        <input type="number" id="kpiNosTarget" value="900000" min="0">
+      </div>
+      <div class="form-group">
+        <label>Факт (номеров, ₽)</label>
+        <input type="number" id="kpiNosFact" value="394000" min="0">
+      </div>
+
       <div class="kpi-preview">
-        <div class="kpi-preview-label">Процент выполнения:</div>
+        <div class="kpi-preview-label">Процент выполнения (проекты):</div>
         <div class="kpi-preview-value" id="kpiPercentDisplay">47,6%</div>
       </div>
     </div>
+  </div>
+
+  <!-- ТАБ: РЕЙТИНГ ОП -->
+  <div class="tab-panel" id="tab-op">
+    <div class="panel-header">
+      <h2>Рейтинг сотрудников ОП (выручка)</h2>
+      <button class="btn btn-primary" id="btnAddOp">+ Добавить сотрудника</button>
+    </div>
+    <div class="op-list-admin" id="opListAdmin"></div>
+
+    <div class="panel-header" style="margin-top:32px;">
+      <h2>Рейтинг ОП по плану</h2>
+      <button class="btn btn-primary" id="btnAddOpPlan">+ Добавить ОП</button>
+    </div>
+    <div class="op-list-admin" id="opPlanListAdmin"></div>
   </div>
 
   <!-- ТАБ: ОПЕНСПЕЙС -->

@@ -19,70 +19,28 @@
   },
   "leaders": [
     {
-      "id": "demo1",
-      "name": "Черепанова Елена",
-      "today": 24,
-      "delta": 8,
-      "last": "13:37",
-      "avatar": "demo1.png",
-      "avgLeads": 38,
-      "avgSets": 336,
-      "dept": "Call-центр №1"
-    },
-    {
-      "id": "demo2",
-      "name": "Хусаинова Динара",
-      "today": 111,
-      "delta": 6,
-      "last": "13:22",
-      "avatar": "demo2.png",
+      "id": "kc_leader_1",
+      "name": "Алиев Нахид",
       "avgLeads": 36,
-      "avgSets": 502,
-      "dept": "Call-центр №3"
+      "avgSets": 0,
+      "avatar": "demo1.png",
+      "dept": "КЦ"
     },
     {
-      "id": "demo3",
-      "name": "Орешкина Наталия",
-      "today": 17,
-      "delta": 5,
-      "last": "13:41",
-      "avatar": "demo3.png",
-      "avgLeads": 35,
-      "avgSets": 552,
-      "dept": "Call-центр №4"
-    },
-    {
-      "id": "demo4",
-      "name": "Усов Михаил",
-      "today": 14,
-      "delta": 4,
-      "last": "13:05",
-      "avatar": "demo4.png",
+      "id": "kc_leader_2",
+      "name": "Россошанская Анна",
       "avgLeads": 34,
-      "avgSets": 518,
-      "dept": "Call-центр №4"
+      "avgSets": 0,
+      "avatar": "demo2.png",
+      "dept": "КЦ"
     },
     {
-      "id": "demo5",
-      "name": "Пашенцева Анастасия",
-      "today": 12,
-      "delta": 3,
-      "last": "12:58",
-      "avatar": "demo5.png",
-      "avgLeads": 32,
-      "avgSets": 551,
-      "dept": "Call-центр №3"
-    },
-    {
-      "id": "demo6",
-      "name": "Биктимирова Румия",
-      "today": 10,
-      "delta": 2,
-      "last": "13:30",
-      "avatar": "demo6.png",
-      "avgLeads": 32,
-      "avgSets": 497,
-      "dept": "Call-центр №1"
+      "id": "kc_leader_3",
+      "name": "Виль Ирина",
+      "avgLeads": 33,
+      "avgSets": 0,
+      "avatar": "demo3.png",
+      "dept": "КЦ"
     }
   ],
   "callCenters": [
@@ -93,7 +51,7 @@
       "delta": 0,
       "avatar": "kc1.png",
       "done": 0,
-      "kpiRank": 3,
+      "kpiRank": 4,
       "planRank": 1
     },
     {
@@ -104,7 +62,7 @@
       "avatar": "kc2.png",
       "done": 0,
       "kpiRank": 2,
-      "planRank": 4
+      "planRank": 3
     },
     {
       "id": "kc3",
@@ -124,13 +82,20 @@
       "avatar": "kc4.png",
       "done": 0,
       "kpiRank": 1,
-      "planRank": 3
+      "planRank": 4
     }
   ],
   "kpi": {
-    "target": 900,
-    "fact": 428,
-    "monthsToGoal": 15
+    "projects": {
+      "target": 900,
+      "fact": 288,
+      "months": 8,
+      "days": 15
+    },
+    "numbers": {
+      "target": 900000,
+      "fact": 394000
+    }
   },
   "openspace": {
     "title": "ЗАГРУЗКА ОПЕНСПЕЙСА",
@@ -183,5 +148,39 @@
       }
     ],
     "totalPlaces": 301
-  }
+  },
+  "opRanking": [
+    {
+      "name": "Казакова Дарья",
+      "amount": 773000,
+      "tariffs": 5,
+      "tests": 5,
+      "avatar": "demo1.png",
+      "dept": "Отдел продаж №1"
+    },
+    {
+      "name": "Герасимова Анна",
+      "amount": 662000,
+      "tariffs": 4,
+      "tests": 7,
+      "avatar": "demo2.png",
+      "dept": "Отдел продаж №1"
+    },
+    {
+      "name": "Позднякова Виктория",
+      "amount": 581000,
+      "tariffs": 3,
+      "tests": 8,
+      "avatar": "demo3.png",
+      "dept": "Отдел продаж №1"
+    }
+  ],
+  "opPlanRanking": [
+    {
+      "name": "ОП 1"
+    },
+    {
+      "name": "ОП 2"
+    }
+  ]
 }

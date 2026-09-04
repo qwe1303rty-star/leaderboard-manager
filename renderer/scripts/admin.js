@@ -188,6 +188,7 @@ function switchTab(name) {
 
   if (name === 'avatars') renderAvatars();
   if (name === 'callcenters') renderCallCenters();
+  if (name === 'op') renderOpTab();
   if (name === 'kpi') renderKpiTab();
   if (name === 'openspace') renderOpenspaceTab();
 }
@@ -196,7 +197,7 @@ function renderLeaders() {
   const list = document.getElementById('leadersList');
   list.innerHTML = '';
 
-  const sorted = appData.leaders.slice().sort((a, b) => (b.avgLeads - a.avgLeads) || (b.avgSets - a.avgSets));
+  const sorted = appData.leaders.slice().sort((a, b) => (b.avgLeads - a.avgLeads));
 
   sorted.forEach((leader, i) => {
     const row = document.createElement('div');
@@ -221,10 +222,6 @@ function renderLeaders() {
       <div class="field">
         <div class="col-label">Сред. лиды</div>
         <input type="number" class="ldr-avg-leads" value="${leader.avgLeads}" min="0">
-      </div>
-      <div class="field">
-        <div class="col-label">Сред. наборы</div>
-        <input type="number" class="ldr-avg-sets" value="${leader.avgSets}" min="0">
       </div>
       <div class="leader-actions">
         <button class="btn btn-danger btn-sm" data-action="delete" data-id="${leader.id}">Удалить</button>
@@ -254,14 +251,6 @@ function renderLeaders() {
       const id = e.target.closest('.leader-row').dataset.id;
       const l = appData.leaders.find(l => l.id === id);
       if (l) l.avgLeads = parseInt(e.target.value) || 0;
-    });
-  });
-
-  list.querySelectorAll('.ldr-avg-sets').forEach(inp => {
-    inp.addEventListener('change', (e) => {
-      const id = e.target.closest('.leader-row').dataset.id;
-      const l = appData.leaders.find(l => l.id === id);
-      if (l) l.avgSets = parseInt(e.target.value) || 0;
     });
   });
 
@@ -359,26 +348,109 @@ function renderCallCenters() {
 }
 
 function renderKpiTab() {
-  const kpi = appData.kpi || { target: 900, fact: 428, monthsToGoal: 15 };
-  document.getElementById('kpiTarget').value = kpi.target;
-  document.getElementById('kpiFact').value = kpi.fact;
-  document.getElementById('kpiMonths').value = kpi.monthsToGoal;
+  const kpi = appData.kpi || {};
+  const projects = kpi.projects || {};
+  const numbers = kpi.numbers || {};
+  document.getElementById('kpiProjTarget').value = projects.target || 0;
+  document.getElementById('kpiProjFact').value = projects.fact || 0;
+  document.getElementById('kpiProjMonths').value = projects.months || 0;
+  document.getElementById('kpiProjDays').value = projects.days || 0;
+  document.getElementById('kpiNosTarget').value = numbers.target || 0;
+  document.getElementById('kpiNosFact').value = numbers.fact || 0;
   updateKpiPercent();
 }
 
 function updateKpiPercent() {
-  const target = parseFloat(document.getElementById('kpiTarget').value) || 0;
-  const fact = parseFloat(document.getElementById('kpiFact').value) || 0;
+  const target = parseFloat(document.getElementById('kpiProjTarget').value) || 0;
+  const fact = parseFloat(document.getElementById('kpiProjFact').value) || 0;
   const pct = target > 0 ? Math.min((fact / target) * 100, 100) : 0;
   const pctStr = pct.toLocaleString('ru-RU', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + '%';
   document.getElementById('kpiPercentDisplay').textContent = pctStr;
 }
 
 function collectKpi() {
-  const target = parseFloat(document.getElementById('kpiTarget').value) || 0;
-  const fact = parseFloat(document.getElementById('kpiFact').value) || 0;
-  const monthsToGoal = parseInt(document.getElementById('kpiMonths').value) || 0;
-  appData.kpi = { target, fact, monthsToGoal };
+  appData.kpi = {
+    projects: {
+      target: parseFloat(document.getElementById('kpiProjTarget').value) || 0,
+      fact: parseFloat(document.getElementById('kpiProjFact').value) || 0,
+      months: parseInt(document.getElementById('kpiProjMonths').value) || 0,
+      days: parseInt(document.getElementById('kpiProjDays').value) || 0
+    },
+    numbers: {
+      target: parseFloat(document.getElementById('kpiNosTarget').value) || 0,
+      fact: parseFloat(document.getElementById('kpiNosFact').value) || 0
+    }
+  };
+}
+
+function renderOpTab() {
+  if (!Array.isArray(appData.opRanking)) appData.opRanking = [];
+  if (!Array.isArray(appData.opPlanRanking)) appData.opPlanRanking = [];
+
+  const attr = (t) => String(t == null ? '' : t).replace(/"/g, '&quot;');
+
+  const revList = document.getElementById('opListAdmin');
+  revList.innerHTML = '';
+  appData.opRanking.forEach((o, i) => {
+    if (!o.id) o.id = 'op-' + generateId() + '-' + i;
+    const row = document.createElement('div');
+    row.className = 'leader-row';
+    row.innerHTML = `
+      <div class="rank-badge">${i + 1}</div>
+      <div class="field"><div class="col-label">Имя</div><input type="text" class="opd-name" value="${attr(o.name)}" placeholder="Имя Фамилия"></div>
+      <div class="field"><div class="col-label">Отдел</div><input type="text" class="opd-dept" value="${attr(o.dept)}" placeholder="Отдел продаж №1"></div>
+      <div class="field"><div class="col-label">Выручка (₽)</div><input type="number" class="opd-amount" value="${o.amount || 0}" min="0"></div>
+      <div class="field"><div class="col-label">Тарифы</div><input type="number" class="opd-tariffs" value="${o.tariffs || 0}" min="0"></div>
+      <div class="field"><div class="col-label">Тесты</div><input type="number" class="opd-tests" value="${o.tests || 0}" min="0"></div>
+      <div class="leader-actions"><button class="btn btn-danger btn-sm" data-op-del="${o.id}">Удалить</button></div>
+    `;
+    revList.appendChild(row);
+  });
+  bindOpField(revList, '.opd-name', 'name', false);
+  bindOpField(revList, '.opd-dept', 'dept', false);
+  bindOpField(revList, '.opd-amount', 'amount', true);
+  bindOpField(revList, '.opd-tariffs', 'tariffs', true);
+  bindOpField(revList, '.opd-tests', 'tests', true);
+  revList.querySelectorAll('[data-op-del]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      appData.opRanking = appData.opRanking.filter(o => o.id !== btn.dataset.opDel);
+      renderOpTab();
+    });
+  });
+
+  const planList = document.getElementById('opPlanListAdmin');
+  planList.innerHTML = '';
+  appData.opPlanRanking.forEach((p, i) => {
+    if (!p.id) p.id = 'opp-' + generateId() + '-' + i;
+    const row = document.createElement('div');
+    row.className = 'leader-row';
+    row.innerHTML = `
+      <div class="rank-badge">${i + 1}</div>
+      <div class="field"><div class="col-label">Название ОП</div><input type="text" class="oppd-name" value="${attr(p.name)}" placeholder="ОП 1"></div>
+      <div class="leader-actions"><button class="btn btn-danger btn-sm" data-opp-del="${p.id}">Удалить</button></div>
+    `;
+    planList.appendChild(row);
+  });
+  bindOpField(planList, '.oppd-name', 'name', false);
+  planList.querySelectorAll('[data-opp-del]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      appData.opPlanRanking = appData.opPlanRanking.filter(p => p.id !== btn.dataset.oppDel);
+      renderOpTab();
+    });
+  });
+}
+
+function bindOpField(container, selector, prop, numeric) {
+  container.querySelectorAll(selector).forEach(inp => {
+    inp.addEventListener('change', (e) => {
+      const row = e.target.closest('.leader-row');
+      const idx = Array.prototype.indexOf.call(container.children, row);
+      const arr = container === document.getElementById('opListAdmin') ? appData.opRanking : appData.opPlanRanking;
+      const item = arr[idx];
+      if (!item) return;
+      item[prop] = numeric ? (parseInt(e.target.value, 10) || 0) : e.target.value;
+    });
+  });
 }
 
 function defaultOpenspace() {
@@ -501,7 +573,7 @@ function renderAvatars() {
     card.innerHTML = `
       <div class="avatar-circle">${avatarContent}</div>
       <div class="avatar-name">${leader.name}</div>
-      <div class="avatar-stat">лиды ${leader.avgLeads} · наборы ${leader.avgSets}</div>
+      <div class="avatar-stat">лиды ${leader.avgLeads}</div>
       <div style="display:flex; gap:8px;">
         <button class="btn btn-primary btn-sm" data-action="upload-avatar" data-id="${leader.id}">Загрузить фото</button>
         ${leader.avatar ? `<button class="btn btn-danger btn-sm" data-action="remove-avatar" data-id="${leader.id}">Удалить</button>` : ''}
@@ -623,6 +695,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   renderLeaders();
   renderCallCenters();
+  renderOpTab();
   renderKpiTab();
   renderOpenspaceTab();
   loadStylesToUI();
@@ -638,11 +711,22 @@ document.addEventListener('DOMContentLoaded', async () => {
       name: 'Новый лидер',
       dept: '',
       avgLeads: 0,
-      avgSets: 0,
       avatar: ''
     });
     renderLeaders();
     showToast('Лидер добавлен');
+  });
+
+  document.getElementById('btnAddOp').addEventListener('click', () => {
+    appData.opRanking.push({ id: 'op-' + generateId(), name: 'Новый сотрудник', dept: 'Отдел продаж №1', amount: 0, tariffs: 0, tests: 0, avatar: '' });
+    renderOpTab();
+    showToast('Сотрудник добавлен');
+  });
+
+  document.getElementById('btnAddOpPlan').addEventListener('click', () => {
+    appData.opPlanRanking.push({ id: 'opp-' + generateId(), name: 'ОП ' + (appData.opPlanRanking.length + 1) });
+    renderOpTab();
+    showToast('ОП добавлен');
   });
 
   document.getElementById('btnSave').addEventListener('click', saveAll);
@@ -700,7 +784,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     loadStylesToUI();
   });
 
-  ['kpiTarget', 'kpiFact'].forEach(id => {
+  ['kpiProjTarget', 'kpiProjFact'].forEach(id => {
     document.getElementById(id).addEventListener('input', updateKpiPercent);
   });
 

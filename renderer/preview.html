@@ -44,15 +44,15 @@
     }
     .brand { display: flex; align-items: center; gap: 1.2vw; }
     .brand img { width: 6.5vh; height: 6.5vh; border-radius: 6px; padding: 5px; }
-    .brand span { font-size: 2.6vh; font-weight: 700; letter-spacing: 6px; }
+    .brand span { font-size: 2.6vh; font-weight: 700; letter-spacing: 6px; color: var(--gold); }
     .datetime {
       display: flex; align-items: center; gap: 2vw;
       border: 1px solid rgba(255,255,255,.12); border-radius: 100px;
       padding: 1.2vh 2.2vw; background: rgba(21,21,23,.7);
     }
-    .datetime .item { display: flex; align-items: center; gap: 10px; font-size: 2vh; font-weight: 600; letter-spacing: 2px; }
+    .datetime .item { display: flex; align-items: center; gap: 10px; font-size: 2vh; font-weight: 600; letter-spacing: 2px; color: var(--gold-hi); }
     .datetime svg { width: 2.4vh; height: 2.4vh; }
-    .datetime .sep { font-weight: 300; opacity: .4; }
+    .datetime .sep { font-weight: 300; opacity: .4; color: var(--text-dim); }
 
     .title-block { position: relative; z-index: 2; margin-bottom: 1.8vh; }
     .title-block h1 {
@@ -156,13 +156,6 @@
       font-variant-numeric: tabular-nums;
     }
     .leader-sub { font-size: 2.4vh; letter-spacing: 4px; text-transform: uppercase; margin-top: 1vh; }
-    .leader-sets {
-      margin-top: 3vh; display: flex; align-items: center; gap: 10px;
-      border: 1px solid rgba(212,169,78,.3); border-radius: 100px;
-      padding: 1.2vh 2vw; background: rgba(11,11,13,.5);
-      font-size: 1.9vh; letter-spacing: 2px; text-transform: uppercase;
-    }
-    .leader-sets svg { width: 2.2vh; height: 2.2vh; }
 
     footer {
       margin-top: 2vh; display: flex; justify-content: center; position: relative; z-index: 2;
@@ -172,6 +165,7 @@
       border: 1px solid rgba(255,255,255,.1); border-radius: 100px;
       padding: 1.2vh 2.5vw; background: rgba(21,21,23,.7);
       font-size: 1.8vh; letter-spacing: 3px; text-transform: uppercase;
+      color: var(--text-dim);
     }
     .live-badge svg { width: 2.2vh; height: 2.2vh; }
     .live-badge .dot { width: 8px; height: 8px; border-radius: 50%; box-shadow: 0 0 12px currentColor; animation: pulse 1.4s infinite; }
@@ -208,7 +202,7 @@
     .kc-tc { min-height: 11vh; }
     .kc-tc.place {
       justify-content: flex-start; gap: 1vw;
-      font-size: clamp(2.6vh, 3.2vh, 3.6vh); font-weight: 800; letter-spacing: 1px;
+      font-size: clamp(3vh, 3.7vh, 4.2vh); font-weight: 800; letter-spacing: 1px;
       color: var(--text);
       background: #1a1a1d;
       border: 1px solid rgba(255,255,255,.16);
@@ -229,7 +223,7 @@
     }
     .kc-badge {
       padding: 1.2vh 1.8vw; border-radius: 12px;
-      font-size: clamp(2.6vh, 3.2vh, 3.6vh); font-weight: 800; letter-spacing: 1px;
+      font-size: clamp(3.2vh, 3.9vh, 4.4vh); font-weight: 800; letter-spacing: 1px;
       color: var(--text);
       background: rgba(255,255,255,.09);
       border: 1px solid rgba(255,255,255,.18);
@@ -272,6 +266,136 @@
       box-shadow: 0 0 10px rgba(212,169,78,0.45);
     }
 
+    /* ===== SLIDE 3/4: ОП ===== */
+    .op-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 3vh;
+      min-height: 0;
+      position: relative;
+      z-index: 2;
+    }
+    .op-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2vh;
+      width: min(100%, 1400px);
+      margin: 0 auto;
+    }
+    .op-item {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 2vw;
+      padding: 2.2vh 2.4vw;
+      border-radius: 24px;
+      background: linear-gradient(160deg, rgba(212,169,78,.12), rgba(21,21,23,.92) 60%);
+      border: 1px solid rgba(212,169,78,.22);
+      box-shadow: 0 0 36px rgba(212,169,78,.08), inset 0 1px 0 rgba(240,213,138,.06);
+    }
+    .op-rank {
+      font-size: clamp(3.6vh, 4.6vh, 5.4vh);
+      font-weight: 900;
+      color: var(--gold-hi);
+      line-height: 1;
+      min-width: 5vw;
+      text-align: center;
+    }
+    .op-person {
+      min-width: 0;
+    }
+    .op-name {
+      font-size: clamp(4vh, 5.4vh, 6.4vh);
+      font-weight: 900;
+      line-height: 1.05;
+      color: var(--text);
+      text-transform: uppercase;
+    }
+    .op-meta {
+      margin-top: .8vh;
+      font-size: clamp(1.9vh, 2.4vh, 3vh);
+      color: var(--text-dim);
+      letter-spacing: 1px;
+    }
+    .op-dept {
+      margin-top: .6vh;
+      font-size: clamp(1.8vh, 2.2vh, 2.8vh);
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--gold);
+      text-transform: uppercase;
+    }
+    .op-chips {
+      display: flex;
+      gap: 1vh;
+      margin-top: 1.4vh;
+      flex-wrap: wrap;
+    }
+    .op-chip {
+      padding: 1vh 1.6vw;
+      border-radius: 100px;
+      font-size: clamp(2.2vh, 2.8vh, 3.4vh);
+      font-weight: 800;
+      letter-spacing: 1px;
+      white-space: nowrap;
+    }
+    .op-chip-tariff {
+      color: #1a1408;
+      background: linear-gradient(180deg, #f0d58a, #d4a94e);
+      border: 1px solid rgba(212,169,78,.4);
+      box-shadow: 0 0 18px rgba(212,169,78,.25);
+    }
+    .op-chip-test {
+      color: var(--text);
+      background: rgba(255,255,255,.09);
+      border: 1px solid rgba(255,255,255,.2);
+    }
+    .op-amount {
+      text-align: right;
+      font-size: clamp(4.8vh, 6.8vh, 8vh);
+      font-weight: 900;
+      color: var(--gold-hi);
+      line-height: 1;
+      white-space: nowrap;
+    }
+    .op-amount small {
+      display: block;
+      margin-top: .4vh;
+      font-size: clamp(1.5vh, 2vh, 2.4vh);
+      color: var(--text-dim);
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .op-plan {
+      gap: 2.8vh;
+      align-items: stretch;
+      width: min(100%, 1100px);
+    }
+    .op-plan .op-item {
+      grid-template-columns: auto 1fr;
+      min-height: 22vh;
+      padding: 3.4vh 3vw;
+      gap: 3vw;
+    }
+    .op-plan .op-name {
+      font-size: clamp(6.5vh, 8.5vh, 10vh);
+      line-height: 1;
+    }
+    .op-plan .op-rank {
+      font-size: clamp(5vh, 6.5vh, 7.5vh);
+      min-width: 6.5vw;
+    }
+    .op-plan .op-meta {
+      margin-top: 1.2vh;
+      font-size: clamp(2.4vh, 3vh, 3.6vh);
+    }
+    .op-plan .op-amount {
+      display: none;
+    }
+
     /* ===== SLIDE 3: ЦЕЛЬ И ФАКТ ===== */
     .kpi-main {
       flex: 1;
@@ -287,9 +411,10 @@
     .kpi-grid {
       display: grid;
       grid-template-columns: 1fr auto 1fr;
-      gap: clamp(2vw, 4vw, 6vw);
+      gap: clamp(2vw, 4vw, 5vw);
       width: 100%;
-      max-width: 900px;
+      max-width: 1200px;
+      align-items: center;
     }
     .kpi-col {
       display: flex;
@@ -298,16 +423,17 @@
       gap: 1vh;
     }
     .kpi-label {
-      font-size: clamp(1.8vh, 2.4vh, 3vh);
+      font-size: clamp(1.8vh, 2.2vh, 2.6vh);
       font-weight: 600;
       letter-spacing: 6px;
       text-transform: uppercase;
     }
     .kpi-value {
-      font-size: clamp(10vh, 16vh, 20vh);
+      font-size: clamp(6.5vh, 9vh, 11vh);
       font-weight: 900;
       line-height: 1;
       font-variant-numeric: tabular-nums;
+      white-space: nowrap;
     }
     .kpi-divider {
       width: 1px;
@@ -316,55 +442,56 @@
     }
     .kpi-progress-wrap {
       width: 100%;
-      max-width: 700px;
+      max-width: 900px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 1.2vh;
+      gap: 1.5vh;
     }
     .kpi-progress-bar {
       width: 100%;
-      height: clamp(6px, 0.7vh, 10px);
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(212,169,78,0.15);
-      border-radius: 999px;
+      height: clamp(1.4vh, 2vh, 2.6vh);
+      border-radius: 100px;
+      background: rgba(255,255,255,.08);
       overflow: hidden;
     }
     .kpi-progress-fill {
       height: 100%;
-      background: linear-gradient(90deg, #a5823f, #d4a94e);
-      border-radius: inherit;
-      box-shadow: 0 0 14px rgba(212,169,78,0.4);
-      transition: width 0.3s ease;
+      width: 0%;
+      border-radius: 100px;
+      background: linear-gradient(90deg, var(--gold), var(--gold-hi));
+      transition: width .8s ease;
     }
     .kpi-progress-label {
-      font-size: clamp(1.6vh, 2.2vh, 2.8vh);
-      font-weight: 700;
+      font-size: clamp(1.6vh, 2vh, 2.4vh);
+      font-weight: 600;
       letter-spacing: 4px;
       text-transform: uppercase;
+      color: var(--text-dim);
     }
     .kpi-time-block {
       display: flex;
-      flex-direction: column;
       align-items: center;
-      gap: 0.5vh;
+      gap: 1.6vh;
+      margin-top: .5vh;
+      background: rgba(212,169,78,.07);
+      border: 1px solid rgba(212,169,78,.22);
+      border-radius: 18px;
+      padding: 1.6vh clamp(2vw, 3vw, 4vw);
     }
     .kpi-time-label {
-      font-size: clamp(1.4vh, 1.8vh, 2.2vh);
+      font-size: clamp(1.6vh, 2vh, 2.4vh);
       font-weight: 600;
       letter-spacing: 5px;
       text-transform: uppercase;
+      color: var(--text-dim);
     }
     .kpi-time-value {
-      font-size: clamp(6vh, 9vh, 11vh);
+      font-size: clamp(3.2vh, 4.2vh, 5vh);
       font-weight: 900;
       line-height: 1;
-    }
-    .kpi-time-unit {
-      font-size: clamp(1.4vh, 1.8vh, 2.2vh);
-      font-weight: 600;
-      letter-spacing: 5px;
-      text-transform: uppercase;
+      white-space: nowrap;
+      color: var(--gold-hi);
     }
 
     /* ===== SLIDE 4: ЗАГРУЗКА ОПЕНСПЕЙСА ===== */
@@ -544,8 +671,8 @@
   </header>
 
   <div class="title-block">
-    <h1><span id="titleMain">ТОП ЛИДЕРОВ</span> <span class="gold" id="titleAccent">ДНЯ</span></h1>
-    <p id="subtitle">Кто сегодня привёл больше всего новых клиентов</p>
+    <h1><span id="titleMain">ТОП ЛИДЕРОВ</span> <span class="gold" id="titleAccent">МЕСЯЦА</span></h1>
+    <p id="subtitle">Кто в этом месяце привёл больше всего новых клиентов</p>
   </div>
 
   <main>
@@ -563,15 +690,11 @@
         <circle cx="62" cy="10" r="4" fill="url(#gGold)"/>
         <rect x="4" y="42" width="56" height="5" rx="2.5" fill="url(#gGold)"/>
       </svg>
-      <div class="leader-label">Лидер дня</div>
+      <div class="leader-label">Лидер месяца</div>
       <div class="leader-name" id="leaderName">—</div>
       <div class="leader-sep" id="leaderSep"></div>
       <div class="leader-num" id="leaderNum">0</div>
       <div class="leader-sub" id="leaderSub">новых клиента</div>
-      <div class="leader-sets" id="leaderSetsBlock">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M8 7h8M6 11h12M9 15h6"/><rect x="3" y="3" width="18" height="18" rx="3"/></svg>
-        Среднее кол-во наборов: <b id="leaderSetsNum" style="margin-left:6px">—</b>
-      </div>
     </div>
   </main>
 
@@ -631,8 +754,96 @@
 
 </div>
 
-<!-- ===== SLIDE 3: ЦЕЛЬ И ФАКТ ===== -->
+<!-- ===== SLIDE 3: РЕЙТИНГ СОТРУДНИКОВ ОП ===== -->
 <div id="slide3" class="slide">
+
+  <header>
+    <div class="brand">
+      <img id="logoImg5" src="" alt="Logo" style="display:none;">
+      <span id="brandTitle5">М.И.Т.А.</span>
+    </div>
+    <div class="datetime" id="datetime5">
+      <div class="item">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+        <span id="dateNow5">—</span>
+      </div>
+      <div class="sep">|</div>
+      <div class="item">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+        <span id="timeNow5">—</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="title-block">
+    <h1><span id="opRevenueTitle">РЕЙТИНГ СОТРУДНИКОВ ОП</span></h1>
+    <p id="opRevenueSubtitle">Выручка в рублях, тарифы и тесты за месяц</p>
+  </div>
+
+  <div class="op-main">
+    <div class="op-list" id="opRevenueList"></div>
+  </div>
+
+  <footer>
+    <div class="live-badge" id="liveBadge3">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M3 17l5-6 4 3 6-8 3 4"/></svg>
+      <span class="dot"></span>
+      Данные обновляются в режиме реального времени
+    </div>
+  </footer>
+
+  <div class="slide-progress" id="slideProgress3">
+    <div class="slide-progress-fill" id="slideProgressFill3"></div>
+  </div>
+
+</div>
+
+<!-- ===== SLIDE 4: РЕЙТИНГ ОП ПО ПЛАНУ ===== -->
+<div id="slide4" class="slide">
+
+  <header>
+    <div class="brand">
+      <img id="logoImg4" src="" alt="Logo" style="display:none;">
+      <span id="brandTitle4">М.И.Т.А.</span>
+    </div>
+    <div class="datetime" id="datetime4">
+      <div class="item">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+        <span id="dateNow4">—</span>
+      </div>
+      <div class="sep">|</div>
+      <div class="item">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+        <span id="timeNow4">—</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="title-block">
+    <h1><span id="opPlanTitle">РЕЙТИНГ ОП ПО ПЛАНУ</span></h1>
+    <p id="opPlanSubtitle">Места ОП по выполнению плана за месяц</p>
+  </div>
+
+  <div class="op-main">
+    <div class="op-list op-plan" id="opPlanList"></div>
+  </div>
+
+  <footer>
+    <div class="live-badge" id="liveBadge4">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M3 17l5-6 4 3 6-8 3 4"/></svg>
+      <span class="dot"></span>
+      Данные обновляются в режиме реального времени
+    </div>
+  </footer>
+
+  <div class="slide-progress" id="slideProgress4">
+    <div class="slide-progress-fill" id="slideProgressFill4"></div>
+  </div>
+
+</div>
+
+<!-- ===== SLIDE 5: ЦЕЛЬ И ФАКТ ===== -->
+<div id="slide5" class="slide">
 
   <header>
     <div class="brand">
@@ -654,7 +865,7 @@
 
   <div class="title-block">
     <h1><span id="kpiTitle">ЦЕЛЬ И ФАКТ</span></h1>
-    <p id="kpiSubtitle">Текущий прогресс к поставленной цели</p>
+    <p id="kpiSubtitle">Номера — целевой показатель</p>
   </div>
 
   <div class="kpi-main">
@@ -676,30 +887,90 @@
       </div>
       <div class="kpi-progress-label" id="kpiProgressLabel">47,6% от цели</div>
     </div>
-
-    <div class="kpi-time-block">
-      <div class="kpi-time-label" id="kpiTimeLabel">До цели</div>
-      <div class="kpi-time-value" id="kpiTimeValue">15</div>
-      <div class="kpi-time-unit" id="kpiTimeUnit">Месяцев</div>
-    </div>
   </div>
 
   <footer>
-    <div class="live-badge" id="liveBadge3">
+    <div class="live-badge" id="liveBadge5">
       <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M3 17l5-6 4 3 6-8 3 4"/></svg>
       <span class="dot"></span>
       Показатели обновляются в режиме реального времени
     </div>
   </footer>
 
-  <div class="slide-progress" id="slideProgress3">
-    <div class="slide-progress-fill" id="slideProgressFill3"></div>
+  <div class="slide-progress" id="slideProgress5">
+    <div class="slide-progress-fill" id="slideProgressFill5"></div>
   </div>
 
 </div>
 
-<!-- ===== SLIDE 4: ЗАГРУЗКА ОПЕНСПЕЙСА ===== -->
-<div id="slide4" class="slide">
+<!-- ===== SLIDE 6: ПРОЕКТЫ ===== -->
+<div id="slide6" class="slide">
+
+  <header>
+    <div class="brand">
+      <img id="logoImg6" src="" alt="Logo" style="display:none;">
+      <span id="brandTitle6">М.И.Т.А.</span>
+    </div>
+    <div class="datetime" id="datetime6">
+      <div class="item">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+        <span id="dateNow6">—</span>
+      </div>
+      <div class="sep">|</div>
+      <div class="item">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+        <span id="timeNow6">—</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="title-block">
+    <h1><span id="kpiProjTitle">ПРОЕКТЫ</span></h1>
+    <p id="kpiProjSubtitle">Проекты — целевой показатель</p>
+  </div>
+
+  <div class="kpi-main">
+    <div class="kpi-grid">
+      <div class="kpi-col">
+        <div class="kpi-label" id="kpiProjTargetLabel">Цель</div>
+        <div class="kpi-value" id="kpiProjTarget">—</div>
+      </div>
+      <div class="kpi-divider" id="kpiProjDivider"></div>
+      <div class="kpi-col">
+        <div class="kpi-label" id="kpiProjFactLabel">Факт</div>
+        <div class="kpi-value" id="kpiProjFact">—</div>
+      </div>
+    </div>
+
+    <div class="kpi-progress-wrap">
+      <div class="kpi-progress-bar">
+        <div class="kpi-progress-fill" id="kpiProjProgressFill"></div>
+      </div>
+      <div class="kpi-progress-label" id="kpiProjProgressLabel">—% от цели</div>
+    </div>
+
+    <div class="kpi-time-block">
+      <div class="kpi-time-label" id="kpiProjTimeLabel">До цели</div>
+      <div class="kpi-time-value" id="kpiProjTime">—</div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="live-badge" id="liveBadge6">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M3 17l5-6 4 3 6-8 3 4"/></svg>
+      <span class="dot"></span>
+      Показатели обновляются в режиме реального времени
+    </div>
+  </footer>
+
+  <div class="slide-progress" id="slideProgress6">
+    <div class="slide-progress-fill" id="slideProgressFill6"></div>
+  </div>
+
+</div>
+
+<!-- ===== SLIDE 7: ЗАГРУЗКА ОПЕНСПЕЙСА ===== -->
+<div id="slide7" class="slide">
 
   <svg width="0" height="0" style="position:absolute">
     <defs>
@@ -711,18 +982,18 @@
 
   <header>
     <div class="brand">
-      <img id="logoImg4" src="" alt="Logo" style="display:none;">
-      <span id="brandTitle4">М.И.Т.А.</span>
+      <img id="logoImg7" src="" alt="Logo" style="display:none;">
+      <span id="brandTitle7">М.И.Т.А.</span>
     </div>
-    <div class="datetime" id="datetime4">
+    <div class="datetime" id="datetime7">
       <div class="item">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
-        <span id="dateNow4">—</span>
+        <span id="dateNow7">—</span>
       </div>
       <div class="sep">|</div>
       <div class="item">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
-        <span id="timeNow4">—</span>
+        <span id="timeNow7">—</span>
       </div>
     </div>
   </header>
@@ -763,18 +1034,17 @@
   </main>
 
   <footer>
-    <div class="live-badge" id="liveBadge4">
+    <div class="live-badge" id="liveBadge7">
       <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M3 17l5-6 4 3 6-8 3 4"/></svg>
       <span class="dot"></span>
       Данные о занятости обновляются автоматически
     </div>
   </footer>
 
-  <div class="slide-progress" id="slideProgress4">
-    <div class="slide-progress-fill" id="slideProgressFill4"></div>
+  <div class="slide-progress" id="slideProgress7">
+    <div class="slide-progress-fill" id="slideProgressFill7"></div>
   </div>
 
-</div>
 </div>
 
 <script src="scripts/preview.js"></script>
