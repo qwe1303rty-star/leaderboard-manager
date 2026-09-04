@@ -1,6 +1,6 @@
 {
   "name": "leaderboard-manager",
-  "version": "1.0.16",
+  "version": "1.0.17",
   "description": "Leaderboard Manager - Desktop App",
   "main": "main.js",
   "scripts": {

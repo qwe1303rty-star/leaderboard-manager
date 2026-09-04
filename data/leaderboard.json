@@ -23,8 +23,8 @@
       "name": "Алиев Нахид",
       "avgLeads": 36,
       "avgSets": 0,
-      "avatar": "demo1.png",
-      "dept": "КЦ"
+      "avatar": "kc_leader_1.png",
+      "dept": "КЦ 2"
     },
     {
       "id": "kc_leader_2",
@@ -32,7 +32,7 @@
       "avgLeads": 34,
       "avgSets": 0,
       "avatar": "demo2.png",
-      "dept": "КЦ"
+      "dept": "КЦ 3"
     },
     {
       "id": "kc_leader_3",
@@ -40,7 +40,7 @@
       "avgLeads": 33,
       "avgSets": 0,
       "avatar": "demo3.png",
-      "dept": "КЦ"
+      "dept": "КЦ 3"
     }
   ],
   "callCenters": [
@@ -156,7 +156,8 @@
       "tariffs": 5,
       "tests": 5,
       "avatar": "demo1.png",
-      "dept": "Отдел продаж №1"
+      "dept": "Отдел продаж №1",
+      "id": "op-mtmkbsdzgpve3sgqi-0"
     },
     {
       "name": "Герасимова Анна",
@@ -164,7 +165,8 @@
       "tariffs": 4,
       "tests": 7,
       "avatar": "demo2.png",
-      "dept": "Отдел продаж №1"
+      "dept": "Отдел продаж №1",
+      "id": "op-mtmkbse0yfvprwvr8-1"
     },
     {
       "name": "Позднякова Виктория",
@@ -172,15 +174,20 @@
       "tariffs": 3,
       "tests": 8,
       "avatar": "demo3.png",
-      "dept": "Отдел продаж №1"
+      "dept": "Отдел продаж №1",
+      "id": "op-mtmkbse039ci8ttux-2"
     }
   ],
   "opPlanRanking": [
     {
-      "name": "ОП 1"
+      "name": "ОП 1",
+      "avatar": "",
+      "id": "opp-mtmkbse05y66yf8bf-0"
     },
     {
-      "name": "ОП 2"
+      "name": "ОП 2",
+      "avatar": "",
+      "id": "opp-mtmkbse0nk75toqqk-1"
     }
   ]
 }

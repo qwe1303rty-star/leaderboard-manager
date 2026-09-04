@@ -55,7 +55,7 @@ function copyDirContents(srcDir, destDir, force = false) {
   });
 }
 
-const DATA_VERSION = 3;
+const DATA_VERSION = 4;
 
 function seedUserData() {
   ensureDirectories();
