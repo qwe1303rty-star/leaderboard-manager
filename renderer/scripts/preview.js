@@ -1,7 +1,7 @@
 const arrowUp = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 19V5M5 12l7-7 7 7"/></svg>';
 const arrowDown = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12l7 7 7-7"/></svg>';
 const SLIDE_DURATION = 15000;
-const SLIDE_DURATIONS = { 4: 30000 }; // слайд 4 (открытый опенспейс) показываем дольше
+const SLIDE_DURATIONS = { 7: 30000 }; // слайд 7 (открытый опенспейс) показываем дольше
 function slideDuration(slide) { return SLIDE_DURATIONS[slide] || SLIDE_DURATION; }
 
 function toFileUrl(p) {
@@ -117,6 +117,8 @@ function applyStyles(s) {
   const opRevSub = document.getElementById('opRevenueSubtitle');
   if (opRevSub) opRevSub.style.color = s.textDim;
   document.getElementById('brandTitle5').style.color = s.accentColor;
+  document.getElementById('logoImg5').style.display = logoUrl ? '' : 'none';
+  if (logoUrl) document.getElementById('logoImg5').src = logoUrl;
   const dt5 = document.getElementById('datetime5');
   if (dt5) {
     dt5.style.borderColor = s.accentColor + '1e';
@@ -148,6 +150,8 @@ function applyStyles(s) {
   const opPlanSub = document.getElementById('opPlanSubtitle');
   if (opPlanSub) opPlanSub.style.color = s.textDim;
   document.getElementById('brandTitle4').style.color = s.accentColor;
+  document.getElementById('logoImg4').style.display = logoUrl ? '' : 'none';
+  if (logoUrl) document.getElementById('logoImg4').src = logoUrl;
   const dt4 = document.getElementById('datetime4');
   if (dt4) {
     dt4.style.borderColor = s.accentColor + '1e';
