@@ -79,11 +79,12 @@
     #board::-webkit-scrollbar-thumb { background: rgba(212,169,78,.28); border-radius: 999px; }
     #board::-webkit-scrollbar-thumb:hover { background: rgba(212,169,78,.45); }
     .row {
-      display: grid; grid-template-columns: 6.5vh 6.5vh 1fr auto auto;
+      display: grid; grid-template-columns: 7vh 7vh 1fr auto auto;
       align-items: center; gap: 1.6vw;
+      flex: 1 1 0; min-height: 0;
       border: 1px solid rgba(255,255,255,.08);
-      border-radius: 16px;
-      padding: 1.4vh 2vw;
+      border-radius: 18px;
+      padding: 1.6vh 2.2vw;
       animation: slideIn .5s ease both;
     }
     @keyframes slideIn { from { opacity: 0; transform: translateX(-24px); } to { opacity: 1; transform: none; } }
@@ -93,38 +94,38 @@
     }
 
     .rank {
-      width: 5.6vh; height: 5.6vh; border-radius: 50%;
+      width: 6.6vh; height: 6.6vh; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      font-size: 2.6vh; font-weight: 800;
+      font-size: 3.1vh; font-weight: 800;
       border: 1px solid rgba(255,255,255,.1);
       color: #fff;
     }
 
     .avatar {
-      width: 5.6vh; height: 5.6vh; border-radius: 50%;
+      width: 6.6vh; height: 6.6vh; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      font-size: 2.2vh; font-weight: 700;
+      font-size: 2.6vh; font-weight: 700;
       border: 2px solid rgba(255,255,255,.1);
       overflow: hidden;
     }
     .avatar img { width: 100%; height: 100%; object-fit: cover; }
 
-    .name { font-size: 2.8vh; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .name { font-size: 3.5vh; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .lb-namewrap { min-width: 0; }
     .lb-namewrap .name { display: block; }
     .lb-dept {
-      display: inline-block; margin-top: .4vh; padding: .2vh .9vw;
-      font-size: 1.5vh; letter-spacing: 2px; text-transform: uppercase; font-weight: 600;
+      display: inline-block; margin-top: .6vh; padding: .3vh 1vw;
+      font-size: 1.8vh; letter-spacing: 2px; text-transform: uppercase; font-weight: 600;
       border: 1px solid rgba(212,169,78,.25); border-radius: 100px; color: var(--gold);
     }
 
     .lb-num { text-align: right; }
     .lb-num span {
-      display: block; font-size: 1.5vh; letter-spacing: 2px; text-transform: uppercase;
+      display: block; font-size: 1.7vh; letter-spacing: 2px; text-transform: uppercase;
       color: var(--text-dim);
     }
     .lb-num b {
-      display: block; font-size: 3.6vh; font-weight: 800; line-height: 1.1;
+      display: block; font-size: 4.6vh; font-weight: 800; line-height: 1.1;
       font-variant-numeric: tabular-nums;
     }
 
@@ -280,7 +281,7 @@
     .op-list {
       display: flex;
       flex-direction: column;
-      gap: 2vh;
+      gap: 1.4vh;
       width: min(100%, 1400px);
       margin: 0 auto;
     }
@@ -288,40 +289,40 @@
       display: grid;
       grid-template-columns: auto 1fr auto;
       align-items: center;
-      gap: 2vw;
-      padding: 2.2vh 2.4vw;
-      border-radius: 24px;
+      gap: 1.6vw;
+      padding: 1.6vh 2vw;
+      border-radius: 22px;
       background: linear-gradient(160deg, rgba(212,169,78,.12), rgba(21,21,23,.92) 60%);
       border: 1px solid rgba(212,169,78,.22);
       box-shadow: 0 0 36px rgba(212,169,78,.08), inset 0 1px 0 rgba(240,213,138,.06);
     }
     .op-rank {
-      font-size: clamp(3.6vh, 4.6vh, 5.4vh);
+      font-size: clamp(3vh, 3.8vh, 4.6vh);
       font-weight: 900;
       color: var(--gold-hi);
       line-height: 1;
-      min-width: 5vw;
+      min-width: 4.2vw;
       text-align: center;
     }
     .op-person {
       min-width: 0;
     }
     .op-name {
-      font-size: clamp(4vh, 5.4vh, 6.4vh);
+      font-size: clamp(3.2vh, 4vh, 4.8vh);
       font-weight: 900;
       line-height: 1.05;
       color: var(--text);
       text-transform: uppercase;
     }
     .op-meta {
-      margin-top: .8vh;
-      font-size: clamp(1.9vh, 2.4vh, 3vh);
+      margin-top: .6vh;
+      font-size: clamp(1.6vh, 2vh, 2.4vh);
       color: var(--text-dim);
       letter-spacing: 1px;
     }
     .op-dept {
-      margin-top: .6vh;
-      font-size: clamp(1.8vh, 2.2vh, 2.8vh);
+      margin-top: .4vh;
+      font-size: clamp(1.5vh, 1.9vh, 2.3vh);
       font-weight: 700;
       letter-spacing: 2px;
       color: var(--gold);
@@ -330,13 +331,13 @@
     .op-chips {
       display: flex;
       gap: 1vh;
-      margin-top: 1.4vh;
+      margin-top: 1vh;
       flex-wrap: wrap;
     }
     .op-chip {
-      padding: 1vh 1.6vw;
+      padding: .7vh 1.4vw;
       border-radius: 100px;
-      font-size: clamp(2.2vh, 2.8vh, 3.4vh);
+      font-size: clamp(1.8vh, 2.2vh, 2.6vh);
       font-weight: 800;
       letter-spacing: 1px;
       white-space: nowrap;
@@ -354,7 +355,7 @@
     }
     .op-amount {
       text-align: right;
-      font-size: clamp(4.8vh, 6.8vh, 8vh);
+      font-size: clamp(3.8vh, 5vh, 6vh);
       font-weight: 900;
       color: var(--gold-hi);
       line-height: 1;
@@ -363,7 +364,7 @@
     .op-amount small {
       display: block;
       margin-top: .4vh;
-      font-size: clamp(1.5vh, 2vh, 2.4vh);
+      font-size: clamp(1.3vh, 1.7vh, 2vh);
       color: var(--text-dim);
       font-weight: 700;
       letter-spacing: 2px;
